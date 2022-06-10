@@ -4,6 +4,8 @@ A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biat
 
 [GLightbox](https://github.com/biati-digital/glightbox) is pure Javascript lightbox library with mobile support.
 
+[Live demo](https://blueswen.github.io/mkdocs-glightbox/) with [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) theme.
+
 ## Dependency
 
 1. Python Package
@@ -51,10 +53,6 @@ A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biat
     | draggable       | True    | Enable or disable mouse drag to go prev and next slide.                                                      |
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
-
-## Demo
-
-Check out [live demo]() with [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) theme.
 
 ## License
 
