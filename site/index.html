@@ -164,18 +164,78 @@
 <ol>
 <li>
 <p>Install plugin from pypi</p>
-<p><code>bash
-pip install mkdocs-glightbox</code></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>pip install mkdocs-glightbox
+</code></pre></div>
 </li>
 <li>
 <p>Add <code>glightbox</code> plugin in to your mkdocs.yml plugins sections:</p>
-<p><code>yaml
-plugins:
-- glightbox</code></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">glightbox</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>You may customize the plugin by passing options in mkdocs.yml:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">glightbox</span><span class="p">:</span><span class="w"></span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="nt">touchNavigation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="nt">loop</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="nt">effect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zoom</span><span class="w"></span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="nt">width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100%</span><span class="w"></span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="nt">height</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span><span class="w"></span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span><span class="nt">zoomable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">    </span><span class="nt">draggable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>touchNavigation</td>
+<td>false</td>
+<td>Enable or disable the touch navigation (swipe).</td>
+</tr>
+<tr>
+<td>loop</td>
+<td>false</td>
+<td>Loop slides on end.</td>
+</tr>
+<tr>
+<td>effect</td>
+<td>zoom</td>
+<td>Name of the effect on lightbox open. (zoom, fade, none)</td>
+</tr>
+<tr>
+<td>width</td>
+<td>100%</td>
+<td>Default width for inline elements and iframes. You can use any unit for example 90% or 100vw for full width.</td>
+</tr>
+<tr>
+<td>height</td>
+<td>auto</td>
+<td>Default height for inline elements and iframes. You can use any unit for example 90%, 100vh or auto.</td>
+</tr>
+<tr>
+<td>zoomable</td>
+<td>true</td>
+<td>Enable or disable zoomable images.</td>
+</tr>
+<tr>
+<td>draggable</td>
+<td>true</td>
+<td>Enable or disable mouse drag to go prev and next slide.</td>
+</tr>
+</tbody>
+</table>
+<p>Check more options information on <a href="https://github.com/biati-digital/glightbox#lightbox-options">GLightbox Docs</a>.</p>
 </li>
 </ol>
 <h2 id="demo">Demo</h2>
-<p>Click image to try lightbox</p>
+<p>Click image to try lightbox and enjoy the view of Taiwan</p>
 <p><a class="glightbox" data-draggable="True" data-effect="zoom" data-height="auto" data-width="80%" data-zoomable="True" href="images/thomas-tucker-sunset-over-taipei-city.jpg"><img alt="Sunset over Taipei City" src="images/thomas-tucker-sunset-over-taipei-city.jpg"/></a>
 Sunset over Taipei City. Credit: <a href="https://unsplash.com/photos/au3CYbd7vCU">Thomas Tucker</a></p>
 <p><a class="glightbox" data-draggable="True" data-effect="zoom" data-height="auto" data-width="80%" data-zoomable="True" href="images/robson-hatsukami-morgan-lanyu.jpg"><img alt="Lanyu, Taiwan" src="images/robson-hatsukami-morgan-lanyu.jpg"/></a>
