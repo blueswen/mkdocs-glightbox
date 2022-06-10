@@ -1,5 +1,8 @@
 # MkDocs GLightbox 
 
+[![PyPI version](https://img.shields.io/pypi/v/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
+[![PyPI downloads](https://img.shields.io/pypi/dm/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
+
 A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biati-digital/glightbox).
 
 GLightbox is pure Javascript lightbox library with mobile support.

@@ -6,10 +6,10 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="mkdocs-glightbox",
-    version="0.1.0",
+    version="0.1.3",
     author="Blueswen",
     author_email="blueswen.tw@gmail.com",
-    url = "https://github.com/biati-digital/glightbox",
+    url = "https://blueswen.github.io/mkdocs-glightbox",
     project_urls = {
         "Source": "https://github.com/Blueswen/mkdocs-glightbox",
     },
