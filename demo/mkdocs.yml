@@ -1,0 +1,28 @@
+site_name: MkDocs GLightbox
+
+repo_url: https://github.com/blueswen/mkdocs-glightbox
+repo_name: blueswen/mkdocs-glightbox
+
+theme:
+  name: material
+  
+  features:
+    - toc.integrate
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+plugins:
+  - glightbox:
+      touchNavigation: true
+      loop: true
+      height: auto
+      width: 80%
+
+nav:
+  - Home: index.md
+
