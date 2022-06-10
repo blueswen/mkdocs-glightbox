@@ -2,7 +2,7 @@
 
 A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biati-digital/glightbox).
 
-[GLightbox](https://github.com/biati-digital/glightbox) is pure Javascript lightbox library with mobile support.
+GLightbox is pure Javascript lightbox library with mobile support.
 
 [Live demo](https://blueswen.github.io/mkdocs-glightbox/) with [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) theme.
 
