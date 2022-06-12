@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="mkdocs-glightbox",
-    version="0.1.3",
+    version="0.1.4",
     author="Blueswen",
     author_email="blueswen.tw@gmail.com",
     url = "https://blueswen.github.io/mkdocs-glightbox",
@@ -22,12 +22,10 @@ setup(
     install_requires=[
         "beautifulsoup4>=4.11.1"
     ],
-    package_data={
-        "mkdocs_glightbox": ["glightbox/*"],
-    },
+    include_package_data=True,
     entry_points={
         "mkdocs.plugins": [
-            "glightbox = mkdocs_glightbox:LightboxPlugin",
+            "glightbox = mkdocs_glightbox.plugin:LightboxPlugin",
         ]
     }
 )
