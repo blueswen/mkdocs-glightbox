@@ -4,6 +4,7 @@ repo_url: https://github.com/blueswen/mkdocs-glightbox
 repo_name: blueswen/mkdocs-glightbox
 site_url: https://github.com/blueswen/mkdocs-glightbox/
 site_dir: ../docs
+edit_uri: ""
 
 theme:
   name: material
