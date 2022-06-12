@@ -54,15 +54,15 @@ A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biat
 
 ## Demo
 
-Click image to try lightbox and enjoy the view of Taiwan
+Click image to try lightbox and enjoy the view of Taiwan.
 
-![Sunset over Taipei City](./images/thomas-tucker-sunset-over-taipei-city.jpg)
+![Sunset over Taipei City](./images/thomas-tucker-sunset-over-taipei-city.jpg) 
 Sunset over Taipei City. Credit: [Thomas Tucker](https://unsplash.com/photos/au3CYbd7vCU)
 
-![Lanyu, Taiwan](./images/robson-hatsukami-morgan-lanyu.jpg)
+![Lanyu, Taiwan](./images/robson-hatsukami-morgan-lanyu.jpg) 
 Lanyu, Taiwan. Credit: [Robson Hatsukami Morgan](https://unsplash.com/photos/T8LZZvKc9Jc)
 
-![Kenting, Taiwan](./images/yuhan-chang-kenting.jpg)
+![Kenting, Taiwan](./images/yuhan-chang-kenting.jpg) 
 Kenting, Taiwan. Credit: [Yuhan Chang](https://unsplash.com/photos/ROWXoqmqyjk)
 
 ## License
