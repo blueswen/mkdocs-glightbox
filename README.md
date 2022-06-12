@@ -28,21 +28,21 @@ GLightbox is pure Javascript lightbox library with mobile support.
 
     ```yaml
     plugins:
-    - glightbox
+       - glightbox
     ```
 
 3. You may customize the plugin by passing options in mkdocs.yml:
 
     ```yaml
     plugins:
-    - glightbox:
-        touchNavigation: false
-        loop: false
-        effect: zoom
-        width: 100%
-        height: auto
-        zoomable: true
-        draggable: true
+       - glightbox:
+           touchNavigation: false
+           loop: false
+           effect: zoom
+           width: 100%
+           height: auto
+           zoomable: true
+           draggable: true
     ```
 
     | Option          | Default | Description                                                                                                  |
