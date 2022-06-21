@@ -12,6 +12,11 @@ theme:
   features:
     - toc.integrate
 
+extra:
+  analytics:
+    provider: google
+    property: G-KQTG9N2Y4N
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
