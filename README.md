@@ -5,7 +5,7 @@
 
 A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biati-digital/glightbox).
 
-GLightbox is pure Javascript lightbox library with mobile support.
+GLightbox is a pure javascript lightbox library with mobile support.
 
 [Live demo](https://blueswen.github.io/mkdocs-glightbox/) with [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) theme.
 
@@ -36,7 +36,7 @@ GLightbox is pure Javascript lightbox library with mobile support.
     ```yaml
     plugins:
        - glightbox:
-           touchNavigation: false
+           touchNavigation: true
            loop: false
            effect: zoom
            width: 100%
@@ -48,12 +48,12 @@ GLightbox is pure Javascript lightbox library with mobile support.
     | Option          | Default | Description                                                                                                  |
     |-----------------|---------|--------------------------------------------------------------------------------------------------------------|
     | touchNavigation | true    | Enable or disable the touch navigation (swipe).                                                              |
-    | loop            | true    | Loop slides on end.                                                                                          |
+    | loop            | false   | Loop slides on end.                                                                                          |
     | effect          | zoom    | Name of the effect on lightbox open. (zoom, fade, none)                                                      |
     | width           | 100%    | Default width for inline elements and iframes. You can use any unit for example 90% or 100vw for full width. |
     | height          | auto    | Default height for inline elements and iframes. You can use any unit for example 90%, 100vh or auto.         |
-    | zoomable        | True    | Enable or disable zoomable images.                                                                           |
-    | draggable       | True    | Enable or disable mouse drag to go prev and next slide.                                                      |
+    | zoomable        | true    | Enable or disable zoomable images.                                                                           |
+    | draggable       | true    | Enable or disable mouse drag to go prev and next slide.                                                      |
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 

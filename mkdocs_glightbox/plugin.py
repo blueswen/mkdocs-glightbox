@@ -15,9 +15,9 @@ class LightboxPlugin(BasePlugin):
     """ Add lightbox to MkDocs """
 
     config_scheme = (
-        ("touchNavigation", config_options.Type(bool, default=False)),
+        ("touchNavigation", config_options.Type(bool, default=True)),
         ("loop", config_options.Type(bool, default=False)),
-        ("effect", config_options.Type(str, default="zoom")),
+        ("effect", config_options.Choice(("zoom", "fade", "none"), default="zoom")),
         ("width", config_options.Type(str, default="100%")),
         ("height", config_options.Type(str, default="auto")),
         ("zoomable", config_options.Type(bool, default=True)),
@@ -50,8 +50,10 @@ class LightboxPlugin(BasePlugin):
             soup.head.append(js_script)
 
             js_code = soup.new_tag("script")
-            lb_config = dict(self.config)
-            lb_config = {k: lb_config[k] for k in ["touchNavigation", "loop"]}
+            plugin_config = dict(self.config)
+            lb_config = {k: plugin_config[k] for k in ["touchNavigation", "loop", "width", "height", "zoomable", "draggable"]}
+            lb_config['openEffect'] = plugin_config.get('effect', 'zoom')
+            lb_config['closeEffect'] = plugin_config.get('effect', 'zoom')
             js_code.string = f"const lightbox = GLightbox({json.dumps(lb_config)});"
             if config["theme"].name == "material" or "navigation.instant" in config["theme"]._vars.get("features", []):
                 # support compatible with mkdocs-material Instant loading feature
@@ -62,18 +64,12 @@ class LightboxPlugin(BasePlugin):
 
     def on_page_content(self, html, page, config, **kwargs):
         """ Wrap img tag with archive tag with glightbox class and attributes from config """
-
-        lb_data_config = dict(self.config)
-        lb_data_config = {k: lb_data_config[k] for k in [
-            "effect", "width", "height", "zoomable", "draggable"]}
         soup = BeautifulSoup(html, "html.parser")
         imgs = soup.find_all("img")
         for img in imgs:
             a = soup.new_tag("a")
             a["class"] = "glightbox"
             a["href"] = img.get("src", "")
-            for key, val in lb_data_config.items():
-                a[f"data-{key}"] = val
             img.wrap(a)
         return str(soup)
 

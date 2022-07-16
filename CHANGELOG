@@ -1,3 +1,7 @@
+mkdocs-glightbox-0.1.6 (2022-07-16)
+
+    * Fix some options not working bug
+
 mkdocs-glightbox-0.1.5 (2022-07-16)
 
     * Fix mkdocs-material header + sidebar vanishing issue when open lightbox (Inspired from https://github.com/biati-digital/glightbox/issues/22)
