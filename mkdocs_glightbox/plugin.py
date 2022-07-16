@@ -28,28 +28,35 @@ class LightboxPlugin(BasePlugin):
         """ Add css link tag, javascript script tag, and javascript code to initialize GLightbox """
 
         soup = BeautifulSoup(output, "html.parser")
+        
+        if soup.head:
+            css_link = soup.new_tag("link")
+            css_link.attrs["href"] = utils.get_relative_url(
+                utils.normalize_url("assets/stylesheets/glightbox.min.css"),
+                page.url
+            )
+            css_link.attrs["rel"] = "stylesheet"
+            soup.head.append(css_link)
 
-        css_link = soup.new_tag("link")
-        css_link.attrs["href"] = utils.get_relative_url(
-            utils.normalize_url("assets/stylesheets/glightbox.min.css"),
-            page.url
-        )
-        css_link.attrs["rel"] = "stylesheet"
-        soup.head.append(css_link)
+            css_patch = soup.new_tag("style")
+            css_patch.string = "html.glightbox-open { overflow: initial; height: 100%; }"
+            soup.head.append(css_patch)
 
-        js_script = soup.new_tag("script")
-        js_script.attrs["src"] = utils.get_relative_url(
-            utils.normalize_url("assets/javascripts/glightbox.min.js"),
-            page.url
-        )
-        soup.head.append(js_script)
+            js_script = soup.new_tag("script")
+            js_script.attrs["src"] = utils.get_relative_url(
+                utils.normalize_url("assets/javascripts/glightbox.min.js"),
+                page.url
+            )
+            soup.head.append(js_script)
 
-        js_code = soup.new_tag("script")
-        js_code["type"] = "text/javascript"
-        lb_config = dict(self.config)
-        lb_config = {k: lb_config[k] for k in ["touchNavigation", "loop"]}
-        js_code.string = f"const lightbox = GLightbox({json.dumps(lb_config)});"
-        soup.body.append(js_code)
+            js_code = soup.new_tag("script")
+            lb_config = dict(self.config)
+            lb_config = {k: lb_config[k] for k in ["touchNavigation", "loop"]}
+            js_code.string = f"const lightbox = GLightbox({json.dumps(lb_config)});"
+            if config["theme"].name == "material" or "navigation.instant" in config["theme"]._vars.get("features", []):
+                # support compatible with mkdocs-material Instant loading feature
+                js_code.string = "document$.subscribe(() => {" + js_code.string + "})"
+            soup.body.append(js_code)
 
         return str(soup)
 

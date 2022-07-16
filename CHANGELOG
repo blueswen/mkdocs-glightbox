@@ -1,0 +1,13 @@
+mkdocs-glightbox-0.1.5 (2022-07-16)
+
+    * Fix mkdocs-material header + sidebar vanishing issue when open lightbox (Inspired from https://github.com/biati-digital/glightbox/issues/22)
+    * Fix mkdocs-material content shrinking causing footer offset issue when open lightbox
+    * Support compatible with mkdocs-material Instant loading feature
+
+mkdocs-glightbox-0.1.4 (2022-06-12)
+
+    * Fix assets location bug
+
+mkdocs-glightbox-0.1.3 (2022-06-10)
+
+    * first release
