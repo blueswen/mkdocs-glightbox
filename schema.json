@@ -1,0 +1,70 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "Supports image with lightbox effect",
+    "oneOf": [
+      {
+        "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/",
+        "enum": [
+          "glightbox"
+        ]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "glightbox": {
+            "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/",
+            "type": "object",
+            "properties": {
+              "touchNavigation": {
+                "title": "Enable touch navigation (swipe)",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "boolean",
+                "default": true
+              },
+              "loop": {
+                "title": "Enable loop slides on end",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "boolean",
+                "default": false
+              },
+              "effect": {
+                "title": "Lightbox open effect",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "string",
+                "enum": [
+                  "zoom", "fade", "none"
+                ],
+                "default": "zoom"
+              },
+              "width": {
+                "title": "Default width for inline elements and iframes",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "string",
+                "default": "100%"
+              },
+              "height": {
+                "title": "Default height for inline elements and iframes",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "string",
+                "default": "auto"
+              },
+              "zoomable": {
+                "title": "Enable zoomable images",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "boolean",
+                "default": true
+              },
+              "draggable": {
+                "title": "Enable mouse drag to go prev and next slide",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "boolean",
+                "default": true
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  }
