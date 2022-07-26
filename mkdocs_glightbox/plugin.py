@@ -64,9 +64,13 @@ class LightboxPlugin(BasePlugin):
 
     def on_page_content(self, html, page, config, **kwargs):
         """ Wrap img tag with archive tag with glightbox class and attributes from config """
+        # skip emoji img with index as class name from pymdownx.emoji https://facelessuser.github.io/pymdown-extensions/extensions/emoji/
+        skip_class = ["emojione", "twemoji", "gemoji"]
         soup = BeautifulSoup(html, "html.parser")
         imgs = soup.find_all("img")
         for img in imgs:
+            if set(skip_class) & set(img.get("class", [])):
+                continue
             a = soup.new_tag("a")
             a["class"] = "glightbox"
             a["href"] = img.get("src", "")
