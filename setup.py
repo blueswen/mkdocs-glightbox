@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="mkdocs-glightbox",
-    version="0.2.0",
+    version="0.2.1",
     author="Blueswen",
     author_email="blueswen.tw@gmail.com",
     url = "https://blueswen.github.io/mkdocs-glightbox",
