@@ -7,12 +7,12 @@ A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biat
 
 GLightbox is a pure javascript lightbox library with mobile support.
 
-[Live demo](https://blueswen.github.io/mkdocs-glightbox/) with [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) theme.
+[Live demo](https://blueswen.github.io/mkdocs-glightbox/) with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/).
 
 ## Dependency
 
 1. Python Package
-   1. beautifulsoup4==4.11.1
+   1. beautifulsoup4>=4.11.1
 2. GLightbox javascript file and css file
    1. GLightbox==3.2.0
 
@@ -24,7 +24,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     pip install mkdocs-glightbox
     ```
 
-2. Add ```glightbox``` plugin in to your mkdocs.yml plugins sections:
+2. Add ```glightbox``` plugin to your mkdocs.yml plugins sections:
 
     ```yaml
     plugins:
@@ -56,6 +56,8 @@ GLightbox is a pure javascript lightbox library with mobile support.
     | draggable       | true    | Enable or disable mouse drag to go prev and next slide.                                                      |
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
+
+4. For more flexibility, you can disable lightbox by a [specific image](https://blueswen.github.io/mkdocs-glightbox/disable/image.md) or a [specific page](https://blueswen.github.io/mkdocs-glightbox/disable/page.md).
 
 ## License
 
