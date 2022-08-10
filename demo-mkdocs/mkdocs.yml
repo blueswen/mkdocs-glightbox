@@ -44,6 +44,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - attr_list
+  - meta
 
 plugins:
   - glightbox
@@ -54,3 +56,6 @@ nav:
     - Sea: taiwan/sea.md
     - Mountain: taiwan/mountain.md
   - Gallery: gallery.md
+  - More Flexibility:
+    - Disable by image: disable/image.md
+    - Disable by page: disable/page.md

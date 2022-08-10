@@ -7,7 +7,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
 ## Dependency
 
 1. Python Package
-    1. beautifulsoup4==4.11.1
+    1. beautifulsoup4>=4.11.1
 2. GLightbox javascript file and css file
     1. GLightbox==3.2.0
 
@@ -19,7 +19,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     pip install mkdocs-glightbox
     ```
 
-2. Add ```glightbox``` plugin in to your mkdocs.yml plugins sections:
+2. Add ```glightbox``` plugin to your mkdocs.yml plugins sections:
 
     ```yaml
     plugins:
@@ -52,9 +52,11 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 
+4. For more flexibility, you can disable lightbox by a [specific image](./disable/image.md) or a [specific page](./disable/page.md).
+
 ## Demo
 
-Click image to try lightbox and enjoy the view of Taiwan.
+Click the image to try lightbox and enjoy the view of Taiwan.
 
 ![Sunset over Taipei City](./images/thomas-tucker-sunset-over-taipei-city.jpg) 
 Sunset over Taipei City. Credit: [Thomas Tucker](https://unsplash.com/photos/au3CYbd7vCU)
