@@ -22,6 +22,7 @@ class LightboxPlugin(BasePlugin):
         ("height", config_options.Type(str, default="auto")),
         ("zoomable", config_options.Type(bool, default=True)),
         ("draggable", config_options.Type(bool, default=True)),
+        ("skip_classes", config_options.Type(list, default=[])),
     )
 
     def on_post_page(self, output, page, config, **kwargs):
@@ -70,8 +71,8 @@ class LightboxPlugin(BasePlugin):
         plugin_config = {k: dict(self.config)[k] for k in ["width", "height"]}
         # skip emoji img with index as class name from pymdownx.emoji https://facelessuser.github.io/pymdown-extensions/extensions/emoji/
         skip_class = ["emojione", "twemoji", "gemoji"]
-        # skip image with off-glb class
-        skip_class += ["off-glb"]
+        # skip image with off-glb and specific class 
+        skip_class += ["off-glb"] + self.config['skip_classes']
         soup = BeautifulSoup(html, "html.parser")
         imgs = soup.find_all("img")
         for img in imgs:
