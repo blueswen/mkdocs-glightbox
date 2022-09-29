@@ -51,7 +51,7 @@ class LightboxPlugin(BasePlugin):
 
             js_code = soup.new_tag("script")
             plugin_config = dict(self.config)
-            lb_config = {k: plugin_config[k] for k in ["touchNavigation", "loop", "width", "height", "zoomable", "draggable"]}
+            lb_config = {k: plugin_config[k] for k in ["touchNavigation", "loop", "zoomable", "draggable"]}
             lb_config['openEffect'] = plugin_config.get('effect', 'zoom')
             lb_config['closeEffect'] = plugin_config.get('effect', 'zoom')
             js_code.string = f"const lightbox = GLightbox({json.dumps(lb_config)});"
@@ -67,6 +67,7 @@ class LightboxPlugin(BasePlugin):
         # skip page with meta glightbox is false
         if "glightbox" in page.meta and page.meta.get('glightbox', True) is False:
             return html
+        plugin_config = {k: dict(self.config)[k] for k in ["width", "height"]}
         # skip emoji img with index as class name from pymdownx.emoji https://facelessuser.github.io/pymdown-extensions/extensions/emoji/
         skip_class = ["emojione", "twemoji", "gemoji"]
         # skip image with off-glb class
@@ -79,6 +80,8 @@ class LightboxPlugin(BasePlugin):
             a = soup.new_tag("a")
             a["class"] = "glightbox"
             a["href"] = img.get("src", "")
+            for k, v in plugin_config.items():
+                a[f"data-{k}"] = v
             img.wrap(a)
         return str(soup)
 
