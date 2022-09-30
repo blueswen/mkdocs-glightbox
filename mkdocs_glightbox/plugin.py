@@ -47,6 +47,7 @@ class LightboxPlugin(BasePlugin):
             .gdesc-inner { font-size: 0.75rem; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
             """
             if config["theme"].name == "material":
                 css_patch.string += """
