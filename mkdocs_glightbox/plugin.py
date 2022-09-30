@@ -23,6 +23,8 @@ class LightboxPlugin(BasePlugin):
         ("zoomable", config_options.Type(bool, default=True)),
         ("draggable", config_options.Type(bool, default=True)),
         ("skip_classes", config_options.Type(list, default=[])),
+        ("auto_caption", config_options.Type(bool, default=False)),
+        ("desc_position", config_options.Choice(("bottom", "top", "left", "right"), default="bottom")),
     )
 
     def on_post_page(self, output, page, config, **kwargs):
@@ -40,7 +42,12 @@ class LightboxPlugin(BasePlugin):
             soup.head.append(css_link)
 
             css_patch = soup.new_tag("style")
-            css_patch.string = "html.glightbox-open { overflow: initial; height: 100%; }"
+            css_patch.string = """
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gdesc-inner { font-size: 0.75rem; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            """
             soup.head.append(css_patch)
 
             js_script = soup.new_tag("script")
@@ -83,6 +90,13 @@ class LightboxPlugin(BasePlugin):
             a["href"] = img.get("src", "")
             for k, v in plugin_config.items():
                 a[f"data-{k}"] = v
+            # alt as title when auto_caption is enabled
+            if self.config['auto_caption'] or ("glightbox.auto_caption" in page.meta and page.meta.get('glightbox.auto_caption', False) is True):
+                a['data-title'] = img.get("data-title", img.get("alt", ""))
+            else:
+                a['data-title'] = img.get("data-title", "")
+            a['data-description'] = img.get("data-description", "")
+            a['data-desc-position'] = img.get("data-desc-position", self.config['desc_position'])
             img.wrap(a)
         return str(soup)
 
