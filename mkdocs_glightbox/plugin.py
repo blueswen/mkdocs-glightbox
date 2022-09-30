@@ -48,6 +48,10 @@ class LightboxPlugin(BasePlugin):
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
             """
+            if config["theme"].name == "material":
+                css_patch.string += """
+                .gscrollbar-fixer { padding-right: 15px; }
+                """
             soup.head.append(css_patch)
 
             js_script = soup.new_tag("script")
