@@ -5,10 +5,10 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<link href="https://github.com/blueswen/mkdocs-glightbox/disable/image/" rel="canonical"/>
+<link href="https://github.com/blueswen/mkdocs-glightbox/caption/caption/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.3.1, mkdocs-material-8.5.3+insiders-4.24.0" name="generator"/>
-<title>Disable by image - MkDocs GLightbox</title>
+<title>Caption - MkDocs GLightbox</title>
 <link href="../../assets/stylesheets/main.38a480a7.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.cbb835fc.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -31,7 +31,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#demo">
+<a class="md-skip" href="#caption">
           Skip to content
         </a>
 </div>
@@ -55,7 +55,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Disable by image
+              Caption
             
           </span>
 </div>
@@ -154,16 +154,71 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../caption/caption/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Caption
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     Caption
     
   </span>
 </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usage">
+<span class="md-ellipsis">
+      Usage
+    </span>
+</a>
+<nav aria-label="Usage" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#title-and-description-attributes">
+<span class="md-ellipsis">
+      Title and description attributes
+    </span>
+</a>
 </li>
-<li class="md-nav__item md-nav__item--active md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" id="__nav_4" type="checkbox"/>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#caption-position">
+<span class="md-ellipsis">
+      Caption position
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#advanced-description">
+<span class="md-ellipsis">
+      Advanced description
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#image-alt-as-the-caption">
+<span class="md-ellipsis">
+      Image alt as the caption
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" id="__nav_4" type="checkbox"/>
 <label class="md-nav__link" for="__nav_4">
 <span class="md-ellipsis">
     More Flexibility
@@ -177,39 +232,16 @@
             More Flexibility
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
-<label class="md-nav__link md-nav__link--active" for="__toc">
-<span class="md-ellipsis">
-    Disable by image
-    
-  </span>
-<span class="md-nav__icon md-icon"></span>
-</label>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../disable/image/">
 <span class="md-ellipsis">
     Disable by image
     
   </span>
 </a>
-<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#demo">
-<span class="md-ellipsis">
-      Demo
-    </span>
-</a>
-</li>
-</ul>
-</nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../page/">
+<a class="md-nav__link" href="../../disable/page/">
 <span class="md-ellipsis">
     Disable by page
     
@@ -226,38 +258,85 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Disable by image</h1>
-<p>You can disable lightbox of images separately by adding <code>off-glb</code> or customized class through markdown_extensions <code>attr_list</code>. Enable <code>attr_list</code> via <code>mkdocs.yml</code>:</p>
+<h1 id="caption">Caption</h1>
+<p>Built-in GLightbox caption with title and description can be used by adding attributes: <code>data-title</code>, <code>data-description</code> through markdown_extensions <code>attr_list</code>. Enable <code>attr_list</code> via <code>mkdocs.yml</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nt">markdown_extensions</span><span class="p">:</span><span class="w"></span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">attr_list</span><span class="w"></span>
 </code></pre></div>
 <p>Check more detail about <code>attr_list</code> on the <a href="https://python-markdown.github.io/extensions/attr_list/">official document</a>.</p>
-<p>The customized classes could be set in plugin option:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">glightbox</span><span class="p">:</span><span class="w"></span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">      </span><span class="nt">skip_classes</span><span class="p">:</span><span class="w"></span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">skip-lightbox</span><span class="w"></span>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When the title or the description has been set, the plugin setting of lightbox image <code>height</code> and <code>width</code> will be overridden as <code>100vh</code>.</p>
+</div>
+<h2 id="usage">Usage</h2>
+<h3 id="title-and-description-attributes">Title and description attributes</h3>
+<div class="highlight"><span class="filename">Setting title and description with attributes</span><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>![<span class="nt">Madeira, Portugal</span>](<span class="na">../images/gallery/blueswen-madeira.jpeg</span>){ data-title="Madeira, Portugal." data-description="Madeira, an autonomous region of Portugal, is an archipelago comprising 4 islands off the northwest coast of Africa. - Google" }
 </code></pre></div>
-<h2 id="demo">Demo</h2>
-<p>The lightbox of the image with class <code>off-glb</code> or <code>skip-lightbox</code> (a custom class in plugin <code>skip_classes</code> options) is disabled.</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>![<span class="nt">Lanyu, Taiwan</span>](<span class="na">../images/gallery/blueswen-lanyu.jpeg</span>){ .off-glb }
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>![<span class="nt">Hallstatt, Austria</span>](<span class="na">../images/gallery/blueswen-hallstatt.jpeg</span>){ .skip-lightbox }
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>![<span class="nt">Obertraun, Austria</span>](<span class="na">../images/gallery/blueswen-obertraun.jpeg</span>)
+<div class="result">
+<figure>
+<p><a class="glightbox" data-desc-position="bottom" data-description="Madeira, an autonomous region of Portugal, is an archipelago comprising 4 islands off the northwest coast of Africa. - Google" data-height="auto" data-title="Madeira, Portugal." data-width="100%" href="../../images/gallery/blueswen-madeira.jpeg"><img alt="Madeira, Portugal" data-description="Madeira, an autonomous region of Portugal, is an archipelago comprising 4 islands off the northwest coast of Africa. - Google" data-title="Madeira, Portugal." src="../../images/gallery/blueswen-madeira.jpeg" width="500px"/></a></p>
+<figcaption>Madeira, Portugal. Credit: Blueswen</figcaption>
+</figure>
+</div>
+<h3 id="caption-position">Caption position</h3>
+<p>Caption position can be changed with plugin option <code>caption_position</code> globally or individually by attribute <code>data-caption-position</code>.</p>
+<div class="highlight"><span class="filename">Setting position with data-caption-position</span><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>![<span class="nt">Cabo da Roca, Portugal</span>](<span class="na">../images/gallery/blueswen-cabo-da-roca.jpeg</span>){ data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-description=".custom-desc1" data-caption-position="right"}
 </code></pre></div>
+<div class="result">
 <figure>
-<p><img alt="Lanyu, Taiwan" class="off-glb" src="../../images/gallery/blueswen-lanyu.jpeg"/></p>
-<figcaption>Lanyu, Taiwan. Credit: Blueswen</figcaption>
+<p><a class="glightbox" data-desc-position="right" data-description="Monument announcing Cabo da Roca as the westernmost point of continental Europe" data-height="auto" data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-width="100%" href="../../images/gallery/blueswen-cabo-da-roca.jpeg"><img alt="Cabo da Roca, Portugal" data-caption-position="right" data-description="Monument announcing Cabo da Roca as the westernmost point of continental Europe" data-title="Cabo da Roca, Portugal. Credit: Blueswen" src="../../images/gallery/blueswen-cabo-da-roca.jpeg" width="400px"/></a></p>
+<figcaption>Cabo da Roca, Portugal. Credit: Blueswen</figcaption>
 </figure>
+</div>
+<h3 id="advanced-description">Advanced description</h3>
+<p>For a longer description, you can add a <code>div</code> with class <code>glightbox-desc</code> and a custom class name which be assigned in <code>data-description</code> with a prefix <code>.</code>. The content in div will be used as the description.</p>
+<div class="highlight"><span class="filename">Advanced Description</span><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>![Castelo de São Jorge, Lisbon, Portugal](../images/gallery/blueswen-lisbon.jpeg){ width="500px" data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-description=".custom-desc1" }
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"glightbox-desc custom-desc1"</span><span class="p">&gt;</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>  <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Saint George's Castle is a historic castle in the Portuguese capital of Lisbon, located in the freguesia of Santa Maria Maior.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>  <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Human occupation of the castle hill dates to at least the 8th century BC while the first fortifications built date from the 1st century BC.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre></div>
+<div class="result">
 <figure>
-<p><img alt="Hallstatt, Austria" class="skip-lightbox" src="../../images/gallery/blueswen-hallstatt.jpeg"/></p>
-<figcaption>Hallstatt, Austria. Credit: Blueswen</figcaption>
+<p><a class="glightbox" data-desc-position="bottom" data-description=".custom-desc1" data-height="auto" data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-width="100%" href="../../images/gallery/blueswen-lisbon.jpeg"><img alt="Castelo de São Jorge, Lisbon, Portugal" data-description=".custom-desc1" data-title="Cabo da Roca, Portugal. Credit: Blueswen" src="../../images/gallery/blueswen-lisbon.jpeg" width="500px"/></a></p>
+<figcaption>Castelo de São Jorge, Lisbon, Portugal. Credit: Blueswen</figcaption>
 </figure>
+<div class="glightbox-desc custom-desc1">
+<p>Saint George's Castle is a historic castle in the Portuguese capital of Lisbon, located in the freguesia of Santa Maria Maior.</p>
+<p>Human occupation of the castle hill dates to at least the 8th century BC while the first fortifications built date from the 1st century BC.</p>
+</div>
+</div>
+<h3 id="image-alt-as-the-caption">Image alt as the caption</h3>
+<p>Since adding a title attribute to each image may be frustrating, we provide an <code>auto_caption</code> option to use the image alt as the default title.</p>
+<ul>
+<li>
+<p>Globally: Enable the <code>auto_caption</code> plugin option in <code>mkdocs.yml</code> to affect whole mkdocs</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">glightbox</span><span class="p">:</span><span class="w"></span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">      </span><span class="nt">auto_caption</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>Locally: Add page metadata <code>glightbox.auto_caption: true</code> through markdown_extensions <code>meta</code> setting page meta on a specific page. Enable <code>meta</code> via <code>mkdocs.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">markdown_extensions</span><span class="p">:</span><span class="w"></span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meta</span><span class="w"></span>
+</code></pre></div>
+<p>Check more detail about <code>meta</code> on the <a href="https://python-markdown.github.io/extensions/meta_data/">official document</a>.</p>
+</li>
+</ul>
+<div class="highlight"><span class="filename">Using image alt as caption title with page meta</span><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>---
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="gu">glightbox.auto_caption: true</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="gu">---</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>![<span class="nt">Yosemite, USA.</span>](<span class="na">../images/gallery/blueswen-yosemite.jpeg</span>)
+</code></pre></div>
+<div class="result">
 <figure>
-<p><a class="glightbox" data-desc-position="bottom" data-description="" data-height="auto" data-title="" data-width="100%" href="../../images/gallery/blueswen-obertraun.jpeg"><img alt="Obertraun, Austria" src="../../images/gallery/blueswen-obertraun.jpeg"/></a></p>
-<figcaption>Obertraun, Austria. Credit: Blueswen</figcaption>
+<p><a class="glightbox" data-desc-position="bottom" data-description="" data-height="auto" data-title="Yosemite, USA." data-width="100%" href="../../images/gallery/blueswen-yosemite.jpeg"><img alt="Yosemite, USA." src="../../images/gallery/blueswen-yosemite.jpeg" width="500px"/></a></p>
+<figcaption>Yosemite, USA. Credit: Blueswen</figcaption>
 </figure>
+</div>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
@@ -265,7 +344,7 @@
 </main>
 <footer class="md-footer">
 <nav aria-label="Footer" class="md-footer__inner md-grid">
-<a aria-label="Previous: Caption" class="md-footer__link md-footer__link--prev" href="../../caption/caption/" rel="prev">
+<a aria-label="Previous: Mountain" class="md-footer__link md-footer__link--prev" href="../../taiwan/mountain/" rel="prev">
 <div class="md-footer__button md-icon">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
 </div>
@@ -274,17 +353,17 @@
 <span class="md-footer__direction">
                 Previous
               </span>
-              Caption
+              Mountain
             </div>
 </div>
 </a>
-<a aria-label="Next: Disable by page" class="md-footer__link md-footer__link--next" href="../page/" rel="next">
+<a aria-label="Next: Disable by image" class="md-footer__link md-footer__link--next" href="../../disable/image/" rel="next">
 <div class="md-footer__title">
 <div class="md-ellipsis">
 <span class="md-footer__direction">
                 Next
               </span>
-              Disable by page
+              Disable by image
             </div>
 </div>
 <div class="md-footer__button md-icon">

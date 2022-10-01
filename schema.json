@@ -37,13 +37,13 @@
                 "default": "zoom"
               },
               "width": {
-                "title": "Default width for inline elements and iframes",
+                "title": "Width for inline elements and iframes",
                 "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
                 "type": "string",
                 "default": "100%"
               },
               "height": {
-                "title": "Default height for inline elements and iframes",
+                "title": "Height for inline elements and iframes",
                 "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
                 "type": "string",
                 "default": "auto"
@@ -59,6 +59,30 @@
                 "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
                 "type": "boolean",
                 "default": true
+              },
+              "skip_classes": {
+                "title": "Custom image class name skip lightbox",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "default": []
+              },
+              "auto_caption": {
+                "title": "Enable using alt of image as caption title automatically",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "boolean",
+                "default": false
+              },
+              "caption_position": {
+                "title": "Default captions position",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "string",
+                "enum": [
+                  "bottom", "top", "left", "right"
+                ],
+                "default": "bottom"
               }
             },
             "additionalProperties": false

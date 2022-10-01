@@ -2,32 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://github.com/blueswen/mkdocs-glightbox/</loc>
-         <lastmod>2022-08-10</lastmod>
+         <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://github.com/blueswen/mkdocs-glightbox/gallery/</loc>
-         <lastmod>2022-08-10</lastmod>
+         <lastmod>2022-10-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://github.com/blueswen/mkdocs-glightbox/caption/caption/</loc>
+         <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://github.com/blueswen/mkdocs-glightbox/disable/image/</loc>
-         <lastmod>2022-08-10</lastmod>
+         <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://github.com/blueswen/mkdocs-glightbox/disable/page/</loc>
-         <lastmod>2022-08-10</lastmod>
+         <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://github.com/blueswen/mkdocs-glightbox/taiwan/mountain/</loc>
-         <lastmod>2022-08-10</lastmod>
+         <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://github.com/blueswen/mkdocs-glightbox/taiwan/sea/</loc>
-         <lastmod>2022-08-10</lastmod>
+         <lastmod>2022-10-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

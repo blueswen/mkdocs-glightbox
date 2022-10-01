@@ -44,18 +44,25 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.details
   - attr_list
   - meta
+  - md_in_html
+  - admonition
 
 plugins:
-  - glightbox
+  - glightbox:
+      zoomable: true
+      draggable: true
+      skip_classes:
+        - skip-lightbox
 
 nav:
   - Home: index.md
   - Taiwan:
     - Sea: taiwan/sea.md
     - Mountain: taiwan/mountain.md
-  - Gallery: gallery.md
+  - Caption: caption/caption.md
   - More Flexibility:
     - Disable by image: disable/image.md
     - Disable by page: disable/page.md

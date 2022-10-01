@@ -23,12 +23,29 @@ glightbox: false
 ![Lanyu, Taiwan](../images/gallery/blueswen-lanyu.jpeg) 
 Lanyu, Taiwan. Credit: Blueswen
 
+![Hallstatt, Austria](../images/gallery/blueswen-hallstatt.jpeg) 
+Hallstatt, Austria. Credit: Blueswen
+
 ![Obertraun, Austria](../images/gallery/blueswen-obertraun.jpeg) 
 Obertraun, Austria. Credit: Blueswen
 ```
+<figure markdown>
 
 ![Lanyu, Taiwan](../images/gallery/blueswen-lanyu.jpeg) 
-Lanyu, Taiwan. Credit: Blueswen
+
+<figcaption>Lanyu, Taiwan. Credit: Blueswen</figcaption>
+</figure>
+
+<figure markdown>
+
+![Hallstatt, Austria](../images/gallery/blueswen-hallstatt.jpeg) 
+
+<figcaption>Hallstatt, Austria. Credit: Blueswen</figcaption>
+</figure>
+
+<figure markdown>
 
 ![Obertraun, Austria](../images/gallery/blueswen-obertraun.jpeg) 
-Obertraun, Austria. Credit: Blueswen
+
+<figcaption>Obertraun, Austria. Credit: Blueswen</figcaption>
+</figure>
