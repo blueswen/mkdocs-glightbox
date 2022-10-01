@@ -25,7 +25,7 @@ class LightboxPlugin(BasePlugin):
         ("draggable", config_options.Type(bool, default=True)),
         ("skip_classes", config_options.Type(list, default=[])),
         ("auto_caption", config_options.Type(bool, default=False)),
-        ("desc_position",
+        ("caption_position",
          config_options.Choice(("bottom", "top", "left", "right"),
                                default="bottom")),
     )
@@ -110,8 +110,8 @@ class LightboxPlugin(BasePlugin):
             else:
                 a['data-title'] = img.get("data-title", "")
             a['data-description'] = img.get("data-description", "")
-            a['data-desc-position'] = img.get("data-desc-position",
-                                              self.config['desc_position'])
+            a['data-desc-position'] = img.get("data-caption-position",
+                                              self.config['caption_position'])
             img.wrap(a)
         return str(soup)
 
