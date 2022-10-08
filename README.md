@@ -65,7 +65,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 
 4. For more flexibility, you can disable lightbox by a [specific image](https://blueswen.github.io/mkdocs-glightbox/disable/image/) or a [specific page](https://blueswen.github.io/mkdocs-glightbox/disable/page/).
-5. Support lightbox image caption, check more details on [Caption](https://blueswen.github.io/mkdocs-glightbox/caption/caption/)
+5. Support lightbox image caption, check more details on [Caption](https://blueswen.github.io/mkdocs-glightbox/caption/caption/).
 
 ## License
 

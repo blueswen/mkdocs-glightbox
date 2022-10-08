@@ -4,7 +4,7 @@ glightbox.auto_caption: true
 
 # Caption
 
-Built-in GLightbox caption with title and description can be used by adding attributes: ```data-title```, ```data-description``` through markdown_extensions ```attr_list```. Enable ```attr_list``` via ```mkdocs.yml```:
+Built-in GLightbox caption feature with title and description in the **light box** can be used by adding attributes: ```data-title```, ```data-description``` through markdown_extensions ```attr_list```. Enable ```attr_list``` via ```mkdocs.yml```:
 
 ```yaml
 markdown_extensions:
@@ -26,12 +26,9 @@ Check more detail about ```attr_list``` on the [official document](https://pytho
 ```
 
 <div class="result" markdown>
-<figure markdown>
 
 ![Madeira, Portugal](../images/gallery/blueswen-madeira.jpeg){ width="500px" data-title="Madeira, Portugal." data-description="Madeira, an autonomous region of Portugal, is an archipelago comprising 4 islands off the northwest coast of Africa. - Google" }
 
-<figcaption>Madeira, Portugal. Credit: Blueswen</figcaption>
-</figure>
 </div>
 
 ### Caption position
@@ -43,10 +40,9 @@ Caption position can be changed with plugin option ```caption_position``` global
 ```
 
 <div class="result" markdown>
-<figure markdown>
+
 ![Cabo da Roca, Portugal](../images/gallery/blueswen-cabo-da-roca.jpeg){ width="400px" data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-description="Monument announcing Cabo da Roca as the westernmost point of continental Europe" data-caption-position="right"}
-<figcaption>Cabo da Roca, Portugal. Credit: Blueswen</figcaption>
-</figure>
+
 </div>
 
 ### Advanced description
@@ -63,10 +59,8 @@ For a longer description, you can add a ```div``` with class ```glightbox-desc``
 ```
 
 <div class="result" markdown>
-<figure markdown>
+
 ![Castelo de São Jorge, Lisbon, Portugal](../images/gallery/blueswen-lisbon.jpeg){ width="500px" data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-description=".custom-desc1" }
-<figcaption>Castelo de São Jorge, Lisbon, Portugal. Credit: Blueswen</figcaption>
-</figure>
 
 <div class="glightbox-desc custom-desc1">
 <p>Saint George's Castle is a historic castle in the Portuguese capital of Lisbon, located in the freguesia of Santa Maria Maior.</p>
@@ -104,10 +98,32 @@ glightbox.auto_caption: true
 ```
 
 <div class="result" markdown>
-<figure markdown>
 
 ![Yosemite, USA.](../images/gallery/blueswen-yosemite.jpeg){ width="500px"}
 
-<figcaption>Yosemite, USA. Credit: Blueswen</figcaption>
+</div>
+
+### Caption on page
+
+The built-in GLightbox caption feature only works in the **light box**. If you want the caption on the page beside the image too, you can consider using the `figure` and `figcaption` tags which mention in [Material for MkDocs document](https://squidfunk.github.io/mkdocs-material/reference/images/#image-captions). These features are also fully compatible with our plugin.
+
+```markdown title="Using figure and figcaption"
+---
+glightbox.auto_caption: true
+---
+
+<div class="result" markdown>
+<figure markdown>
+![Tulum, Mexico.](../images/gallery/blueswen-tulum.jpeg){ width="500px"}
+<figcaption>Tulum, Mexico. Credit: Blueswen</figcaption>
+</figure>
+```
+
+<div class="result" markdown>
+<figure markdown>
+
+![Tulum, Mexico.](../images/gallery/blueswen-tulum.jpeg){ width="500px"}
+
+<figcaption>Tulum, Mexico. Credit: Blueswen</figcaption>
 </figure>
 </div>

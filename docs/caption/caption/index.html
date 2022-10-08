@@ -211,6 +211,13 @@
     </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#caption-on-page">
+<span class="md-ellipsis">
+      Caption on page
+    </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -259,7 +266,7 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="caption">Caption</h1>
-<p>Built-in GLightbox caption with title and description can be used by adding attributes: <code>data-title</code>, <code>data-description</code> through markdown_extensions <code>attr_list</code>. Enable <code>attr_list</code> via <code>mkdocs.yml</code>:</p>
+<p>Built-in GLightbox caption feature with title and description in the <strong>light box</strong> can be used by adding attributes: <code>data-title</code>, <code>data-description</code> through markdown_extensions <code>attr_list</code>. Enable <code>attr_list</code> via <code>mkdocs.yml</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nt">markdown_extensions</span><span class="p">:</span><span class="w"></span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">attr_list</span><span class="w"></span>
 </code></pre></div>
@@ -273,20 +280,14 @@
 <div class="highlight"><span class="filename">Setting title and description with attributes</span><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>![<span class="nt">Madeira, Portugal</span>](<span class="na">../images/gallery/blueswen-madeira.jpeg</span>){ data-title="Madeira, Portugal." data-description="Madeira, an autonomous region of Portugal, is an archipelago comprising 4 islands off the northwest coast of Africa. - Google" }
 </code></pre></div>
 <div class="result">
-<figure>
 <p><a class="glightbox" data-desc-position="bottom" data-description="Madeira, an autonomous region of Portugal, is an archipelago comprising 4 islands off the northwest coast of Africa. - Google" data-height="auto" data-title="Madeira, Portugal." data-width="100%" href="../../images/gallery/blueswen-madeira.jpeg"><img alt="Madeira, Portugal" data-description="Madeira, an autonomous region of Portugal, is an archipelago comprising 4 islands off the northwest coast of Africa. - Google" data-title="Madeira, Portugal." src="../../images/gallery/blueswen-madeira.jpeg" width="500px"/></a></p>
-<figcaption>Madeira, Portugal. Credit: Blueswen</figcaption>
-</figure>
 </div>
 <h3 id="caption-position">Caption position</h3>
 <p>Caption position can be changed with plugin option <code>caption_position</code> globally or individually by attribute <code>data-caption-position</code>.</p>
 <div class="highlight"><span class="filename">Setting position with data-caption-position</span><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>![<span class="nt">Cabo da Roca, Portugal</span>](<span class="na">../images/gallery/blueswen-cabo-da-roca.jpeg</span>){ data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-description=".custom-desc1" data-caption-position="right"}
 </code></pre></div>
 <div class="result">
-<figure>
 <p><a class="glightbox" data-desc-position="right" data-description="Monument announcing Cabo da Roca as the westernmost point of continental Europe" data-height="auto" data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-width="100%" href="../../images/gallery/blueswen-cabo-da-roca.jpeg"><img alt="Cabo da Roca, Portugal" data-caption-position="right" data-description="Monument announcing Cabo da Roca as the westernmost point of continental Europe" data-title="Cabo da Roca, Portugal. Credit: Blueswen" src="../../images/gallery/blueswen-cabo-da-roca.jpeg" width="400px"/></a></p>
-<figcaption>Cabo da Roca, Portugal. Credit: Blueswen</figcaption>
-</figure>
 </div>
 <h3 id="advanced-description">Advanced description</h3>
 <p>For a longer description, you can add a <code>div</code> with class <code>glightbox-desc</code> and a custom class name which be assigned in <code>data-description</code> with a prefix <code>.</code>. The content in div will be used as the description.</p>
@@ -298,10 +299,7 @@
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </code></pre></div>
 <div class="result">
-<figure>
 <p><a class="glightbox" data-desc-position="bottom" data-description=".custom-desc1" data-height="auto" data-title="Cabo da Roca, Portugal. Credit: Blueswen" data-width="100%" href="../../images/gallery/blueswen-lisbon.jpeg"><img alt="Castelo de São Jorge, Lisbon, Portugal" data-description=".custom-desc1" data-title="Cabo da Roca, Portugal. Credit: Blueswen" src="../../images/gallery/blueswen-lisbon.jpeg" width="500px"/></a></p>
-<figcaption>Castelo de São Jorge, Lisbon, Portugal. Credit: Blueswen</figcaption>
-</figure>
 <div class="glightbox-desc custom-desc1">
 <p>Saint George's Castle is a historic castle in the Portuguese capital of Lisbon, located in the freguesia of Santa Maria Maior.</p>
 <p>Human occupation of the castle hill dates to at least the 8th century BC while the first fortifications built date from the 1st century BC.</p>
@@ -332,9 +330,24 @@
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>![<span class="nt">Yosemite, USA.</span>](<span class="na">../images/gallery/blueswen-yosemite.jpeg</span>)
 </code></pre></div>
 <div class="result">
-<figure>
 <p><a class="glightbox" data-desc-position="bottom" data-description="" data-height="auto" data-title="Yosemite, USA." data-width="100%" href="../../images/gallery/blueswen-yosemite.jpeg"><img alt="Yosemite, USA." src="../../images/gallery/blueswen-yosemite.jpeg" width="500px"/></a></p>
-<figcaption>Yosemite, USA. Credit: Blueswen</figcaption>
+</div>
+<h3 id="caption-on-page">Caption on page</h3>
+<p>The built-in GLightbox caption feature only works in the <strong>light box</strong>. If you want the caption on the page beside the image too, you can consider using the <code>figure</code> and <code>figcaption</code> tags which mention in <a href="https://squidfunk.github.io/mkdocs-material/reference/images/#image-captions">Material for MkDocs document</a>. These features are also fully compatible with our plugin.</p>
+<div class="highlight"><span class="filename">Using figure and figcaption</span><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>---
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="gu">glightbox.auto_caption: true</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="gu">---</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>&lt;div class="result" markdown&gt;
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>&lt;figure markdown&gt;
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>![<span class="nt">Tulum, Mexico.</span>](<span class="na">../images/gallery/blueswen-tulum.jpeg</span>){ width="500px"}
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>&lt;figcaption&gt;Tulum, Mexico. Credit: Blueswen&lt;/figcaption&gt;
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>&lt;/figure&gt;
+</code></pre></div>
+<div class="result">
+<figure>
+<p><a class="glightbox" data-desc-position="bottom" data-description="" data-height="auto" data-title="Tulum, Mexico." data-width="100%" href="../../images/gallery/blueswen-tulum.jpeg"><img alt="Tulum, Mexico." src="../../images/gallery/blueswen-tulum.jpeg" width="500px"/></a></p>
+<figcaption>Tulum, Mexico. Credit: Blueswen</figcaption>
 </figure>
 </div>
 </article>
