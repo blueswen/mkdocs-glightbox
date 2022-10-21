@@ -1,4 +1,4 @@
-# MkDocs GLightbox 
+# MkDocs GLightbox
 
 [![PyPI version](https://img.shields.io/pypi/v/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
 [![PyPI downloads](https://img.shields.io/pypi/dm/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
@@ -43,7 +43,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
            height: auto
            zoomable: true
            draggable: true
-           skip_classes: 
+           skip_classes:
              - custom-skip-class-name
            auto_caption: false
            caption_position: bottom
