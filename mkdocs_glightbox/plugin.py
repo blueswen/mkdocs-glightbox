@@ -32,6 +32,10 @@ class LightboxPlugin(BasePlugin):
 
     def on_post_page(self, output, page, config, **kwargs):
         """ Add css link tag, javascript script tag, and javascript code to initialize GLightbox """
+        # skip page with meta glightbox is false
+        if "glightbox" in page.meta and page.meta.get('glightbox',
+                                                      True) is False:
+            return output
 
         soup = BeautifulSoup(output, "html.parser")
 
