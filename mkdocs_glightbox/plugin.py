@@ -19,6 +19,8 @@ class LightboxPlugin(BasePlugin):
         ("loop", config_options.Type(bool, default=False)),
         ("effect",
          config_options.Choice(("zoom", "fade", "none"), default="zoom")),
+        ("slide_effect",
+         config_options.Choice(("slide", "zoom", "fade", "none"), default="slide")),
         ("width", config_options.Type(str, default="100%")),
         ("height", config_options.Type(str, default="auto")),
         ("zoomable", config_options.Type(bool, default=True)),
@@ -75,6 +77,7 @@ class LightboxPlugin(BasePlugin):
             }
             lb_config['openEffect'] = plugin_config.get('effect', 'zoom')
             lb_config['closeEffect'] = plugin_config.get('effect', 'zoom')
+            lb_config['slideEffect'] = plugin_config.get('slide_effect', 'slide')
             js_code.string = f"const lightbox = GLightbox({json.dumps(lb_config)});"
             if config[
                     "theme"].name == "material" or "navigation.instant" in config[
