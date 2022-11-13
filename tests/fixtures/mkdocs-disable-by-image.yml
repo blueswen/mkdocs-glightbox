@@ -1,0 +1,10 @@
+site_name: test mkdocs_glightbox
+use_directory_urls: true
+
+markdown_extensions:
+  - attr_list
+
+plugins:
+  - glightbox:
+      skip_classes:
+        - skip-lightbox

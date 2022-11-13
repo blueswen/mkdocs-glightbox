@@ -1,0 +1,13 @@
+site_name: test mkdocs_glightbox
+use_directory_urls: true
+
+plugins:
+    - glightbox:
+        touchNavigation: false
+        loop: true
+        effect: fade
+        slide_effect: fade
+        width: 80%
+        height: 80%
+        zoomable: false
+        draggable: false

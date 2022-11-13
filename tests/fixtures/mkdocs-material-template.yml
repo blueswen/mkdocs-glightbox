@@ -1,0 +1,14 @@
+site_name: test mkdocs_glightbox
+use_directory_urls: true
+docs_dir: template_docs
+
+theme:
+  name: material
+  custom_dir: template_docs/overrides
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+
+plugins:
+    - glightbox

@@ -1,0 +1,14 @@
+site_name: test mkdocs_glightbox
+use_directory_urls: true
+
+theme:
+  name: material
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+plugins:
+    - glightbox

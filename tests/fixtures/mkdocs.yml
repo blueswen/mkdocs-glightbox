@@ -1,0 +1,5 @@
+site_name: test mkdocs_glightbox
+use_directory_urls: true
+
+plugins:
+    - glightbox
