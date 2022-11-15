@@ -34,11 +34,12 @@ GLightbox is a pure javascript lightbox library with mobile support.
            touchNavigation: true
            loop: false
            effect: zoom
+           slide_effect: slide
            width: 100%
            height: auto
            zoomable: true
            draggable: true
-           skip_classes: 
+           skip_classes:
              - custom-skip-class-name
            auto_caption: false
            caption_position: bottom
@@ -49,6 +50,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     | touchNavigation  | true    | Enable or disable the touch navigation (swipe).                                                      |
     | loop             | false   | Loop slides on end.                                                                                  |
     | effect           | zoom    | Name of the effect on lightbox open. (zoom, fade, none)                                              |
+    | slide_effect     | slide   | Name of the effect on lightbox slide. (slide, zoom, fade, none)                                      |
     | width            | 100%    | Width for inline elements and iframes. You can use any unit for example 90% or 100vw for full width. |
     | height           | auto    | Height for inline elements and iframes. You can use any unit for example 90%, 100vh or auto.         |
     | zoomable         | true    | Enable or disable zoomable images.                                                                   |

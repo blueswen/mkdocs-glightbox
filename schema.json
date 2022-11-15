@@ -36,6 +36,15 @@
                 ],
                 "default": "zoom"
               },
+              "slide_effect": {
+                "title": "Lightbox slide effect",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "string",
+                "enum": [
+                  "slide", "zoom", "fade", "none"
+                ],
+                "default": "slide"
+              },
               "width": {
                 "title": "Width for inline elements and iframes",
                 "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
