@@ -3,11 +3,9 @@ import logging
 import os
 import re
 import shutil
-from contextlib import contextmanager
 
 # MkDocs
 from mkdocs.__main__ import build_command
-from mkdocs.config import load_config
 
 # other 3rd party
 import pytest
@@ -493,4 +491,18 @@ def test_site_url(tmp_path):
     assert re.search(
         rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
         contents,
+    )
+
+
+def test_static(tmp_path):
+    """
+    Validate static files
+    """
+    mkdocs_file = "mkdocs.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    assert os.path.exists(
+        os.path.join(testproject_path, "site/assets/stylesheets/glightbox.min.css")
+    )
+    assert os.path.exists(
+        os.path.join(testproject_path, "site/assets/javascripts/glightbox.min.js")
     )

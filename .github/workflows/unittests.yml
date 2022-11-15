@@ -1,5 +1,5 @@
 name: Unit tests
-on: [pull_request, workflow_dispatch]
+on: [push, pull_request, workflow_dispatch]
 jobs:
   run:
     name: Run unit tests with codecov upload
@@ -37,3 +37,11 @@ jobs:
         git config --global user.email "githubaction@gmail.com"
         pytest --cov=mkdocs_glightbox --cov-report=xml
   
+    - name: Upload coverage to Codecov
+      if: "contains(env.USING_COVERAGE, matrix.python-version)"
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: unittests
+        fail_ci_if_error: false
