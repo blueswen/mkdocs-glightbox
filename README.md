@@ -1,7 +1,10 @@
 # MkDocs GLightbox
 
-[![PyPI version](https://img.shields.io/pypi/v/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
-[![PyPI downloads](https://img.shields.io/pypi/dm/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
+<p align="center">
+<a target="_blank" href="https://pypi.org/project/mkdocs-glightbox"><img src="https://img.shields.io/pypi/v/mkdocs-glightbox.svg" alt="PyPI version"/></a>
+<a target="_blank" href="https://pypi.org/project/mkdocs-glightbox"><img src="https://img.shields.io/pypi/dm/mkdocs-glightbox.svg" alt="PyPI downloads"/></a>
+<a target="_blank" href="https://codecov.io/gh/blueswen/mkdocs-glightbox"><img src="https://codecov.io/gh/blueswen/mkdocs-glightbox/branch/main/graph/badge.svg?token=KAJS3NU81H" alt="Codecov"/></a>
+</p>
 
 A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biati-digital/glightbox).
 
@@ -13,12 +16,12 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
 1. Python Package
    1. beautifulsoup4>=4.11.1
-2. GLightbox javascript file and css file
+2. GLightbox javascript file and CSS file
    1. GLightbox==3.2.0
 
 ## Usage
 
-1. Install plugin from pypi
+1. Install the plugin from PyPI
 
     ```bash
     pip install mkdocs-glightbox
@@ -51,7 +54,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     ```
 
     | Option           | Default | Description                                                                                          |
-    |------------------|---------|------------------------------------------------------------------------------------------------------|
+    | ---------------- | ------- | ---------------------------------------------------------------------------------------------------- |
     | touchNavigation  | true    | Enable or disable the touch navigation (swipe).                                                      |
     | loop             | false   | Loop slides on end.                                                                                  |
     | effect           | zoom    | Name of the effect on lightbox open. (zoom, fade, none)                                              |
@@ -66,7 +69,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 
-4. For more flexibility, you can disable lightbox by a [specific image](https://blueswen.github.io/mkdocs-glightbox/disable/image/) or a [specific page](https://blueswen.github.io/mkdocs-glightbox/disable/page/).
+4. For more flexibility, you can disable the lightbox with a [specific image](https://blueswen.github.io/mkdocs-glightbox/disable/image/) or a [specific page](https://blueswen.github.io/mkdocs-glightbox/disable/page/).
 5. Support lightbox image caption, check more details on [Caption](https://blueswen.github.io/mkdocs-glightbox/caption/caption/).
 
 ## License
