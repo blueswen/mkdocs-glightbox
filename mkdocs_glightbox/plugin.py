@@ -110,20 +110,36 @@ class LightboxPlugin(BasePlugin):
             a = soup.new_tag("a")
             a["class"] = "glightbox"
             a["href"] = img.get("src", "")
+            # setting data-width and data-height with plugin options
             for k, v in plugin_config.items():
                 a[f"data-{k}"] = v
-            # alt as title when auto_caption is enabled
-            if self.config["auto_caption"] or (
-                "glightbox.auto_caption" in page.meta
-                and page.meta.get("glightbox.auto_caption", False) is True
-            ):
-                a["data-title"] = img.get("data-title", img.get("alt", ""))
-            else:
-                a["data-title"] = img.get("data-title", "")
-            a["data-description"] = img.get("data-description", "")
-            a["data-desc-position"] = img.get(
-                "data-caption-position", self.config["caption_position"]
-            )
+            slide_options = ["title", "description", "caption-position", "gallery"]
+            for option in slide_options:
+                attr = f"data-{option}"
+                if attr == "data-title":
+                    # alt as title when auto_caption is enabled
+                    if self.config["auto_caption"] or (
+                        "glightbox.auto_caption" in page.meta
+                        and page.meta.get("glightbox.auto_caption", False) is True
+                    ):
+                        val = img.get("data-title", img.get("alt", ""))
+                    else:
+                        val = img.get("data-title", "")
+                elif attr == "data-caption-position":
+                    # plugin option caption_position as default
+                    val = img.get(
+                        "data-caption-position", self.config["caption_position"]
+                    )
+                else:
+                    val = img.get(attr, "")
+
+                # skip val is empty
+                if val != "":
+                    # convert data-caption-position to data-desc-position
+                    if attr == "data-caption-position":
+                        a["data-desc-position"] = val
+                    else:
+                        a[attr] = val
             img.wrap(a)
         return str(soup)
 
