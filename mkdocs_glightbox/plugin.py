@@ -53,7 +53,6 @@ class LightboxPlugin(BasePlugin):
             css_patch = soup.new_tag("style")
             css_patch.string = """
             html.glightbox-open { overflow: initial; height: 100%; }
-            .gdesc-inner { font-size: 0.75rem; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
             .gslide-image img { background: white; }
@@ -61,6 +60,10 @@ class LightboxPlugin(BasePlugin):
             if config["theme"].name == "material":
                 css_patch.string += """
                 .gscrollbar-fixer { padding-right: 15px; }
+                .gdesc-inner { font-size: 0.75rem; }
+                body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+                body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+                body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}
                 """
             soup.head.append(css_patch)
 
