@@ -337,12 +337,18 @@ def test_options(tmp_path):
     path = "../"
     validate_static(contents, path)
     validate_script(contents)
+    # validate slide options
     regex_obj = re.search(
-        rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox" (.*) href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
         contents,
     )
+    assert regex_obj
+    text = regex_obj.group(1)
+    assert 'data-height="60%"' in text
+    assert 'data-width="80%"' in text
+    assert 'data-desc-position="right"' in text
 
-    # validate position
+    # validate GLightbox options
     regex_obj = re.search(
         r"const lightbox = GLightbox\((.*)\);",
         contents,
@@ -360,6 +366,50 @@ def test_options(tmp_path):
     ]
     for option in options:
         assert option in text
+
+
+def test_gallery(tmp_path):
+    """
+    Validate gallery
+    """
+    mkdocs_file = "mkdocs-material.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/gallery/index.html"
+    contents = file.read_text(encoding="utf8")
+    path = "../"
+    validate_static(contents, path=path)
+    validate_script(contents)
+    regex_obj = re.search(
+        rf'<a class="glightbox" (.*) href="{path}img.png"><img alt="image-a" .* src="{path}img.png"\/><\/a>',
+        contents,
+    )
+    assert regex_obj
+    text = regex_obj.group(1)
+    assert 'data-gallery="1"' in text
+
+    regex_obj = re.search(
+        rf'<a class="glightbox" (.*) href="{path}img.png"><img alt="image-b" .* src="{path}img.png"\/><\/a>',
+        contents,
+    )
+    assert regex_obj
+    text = regex_obj.group(1)
+    assert 'data-gallery="1"' in text
+
+    regex_obj = re.search(
+        rf'<a class="glightbox" (.*) href="{path}another-img.png"><img alt="image-c" .* src="{path}another-img.png"\/><\/a>',
+        contents,
+    )
+    assert regex_obj
+    text = regex_obj.group(1)
+    assert 'data-gallery="2"' in text
+
+    regex_obj = re.search(
+        rf'<a class="glightbox" (.*) href="{path}another-img.png"><img alt="image-d" .* src="{path}another-img.png"\/><\/a>',
+        contents,
+    )
+    assert regex_obj
+    text = regex_obj.group(1)
+    assert 'data-gallery="2"' in text
 
 
 def test_caption(tmp_path):
@@ -506,3 +556,4 @@ def test_static(tmp_path):
     assert os.path.exists(
         os.path.join(testproject_path, "site/assets/javascripts/glightbox.min.js")
     )
+

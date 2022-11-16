@@ -8,6 +8,8 @@ plugins:
         effect: fade
         slide_effect: fade
         width: 80%
-        height: 80%
+        height: 60%
         zoomable: false
         draggable: false
+        caption_position: right
+        auto_caption: true
