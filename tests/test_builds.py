@@ -557,3 +557,19 @@ def test_static(tmp_path):
         os.path.join(testproject_path, "site/assets/javascripts/glightbox.min.js")
     )
 
+
+def test_image_in_anchor(tmp_path):
+    """
+    Disable when image in an anchor tag
+    """
+    mkdocs_file = "mkdocs.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/image_in_anchor/index.html"
+    contents = file.read_text(encoding="utf8")
+    path = "../"
+    validate_static(contents, path)
+    validate_script(contents)
+    assert re.search(
+        rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        contents,
+    ) is None

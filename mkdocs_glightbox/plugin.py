@@ -93,7 +93,7 @@ class LightboxPlugin(BasePlugin):
         return str(soup)
 
     def on_page_content(self, html, page, config, **kwargs):
-        """Wrap img tag with archive tag with glightbox class and attributes from config"""
+        """Wrap img tag with anchor tag with glightbox class and attributes from config"""
         # skip page with meta glightbox is false
         if "glightbox" in page.meta and page.meta.get("glightbox", True) is False:
             return html
@@ -105,7 +105,7 @@ class LightboxPlugin(BasePlugin):
         soup = BeautifulSoup(html, "html.parser")
         imgs = soup.find_all("img")
         for img in imgs:
-            if set(skip_class) & set(img.get("class", [])):
+            if set(skip_class) & set(img.get("class", [])) or img.parent.name == "a":
                 continue
             a = soup.new_tag("a")
             a["class"] = "glightbox"
