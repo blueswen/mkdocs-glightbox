@@ -5,7 +5,7 @@ markdown_extensions:
   - attr_list
 ```
 
-Check more detail about ```attr_list``` on the [official document](https://python-markdown.github.io/extensions/attr_list/).
+Check more details about ```attr_list``` on the [official document](https://python-markdown.github.io/extensions/attr_list/).
 
 The customized classes could be set in plugin option:
 

@@ -11,7 +11,7 @@ markdown_extensions:
   - attr_list
 ```
 
-Check more detail about ```attr_list``` on the [official document](https://python-markdown.github.io/extensions/attr_list/).
+Check more details about ```attr_list``` on the [official document](https://python-markdown.github.io/extensions/attr_list/).
 
 !!! warning "Warning"
 
@@ -87,7 +87,7 @@ Since adding a title attribute to each image may be frustrating, we provide an `
       - meta
     ```
 
-    Check more detail about ```meta``` on the [official document](https://python-markdown.github.io/extensions/meta_data/).
+    Check more details about ```meta``` on the [official document](https://python-markdown.github.io/extensions/meta_data/).
 
 ```markdown title="Using image alt as caption title with page meta"
 ---
@@ -112,7 +112,6 @@ The built-in GLightbox caption feature only works in the **light box**. If you w
 glightbox.auto_caption: true
 ---
 
-<div class="result" markdown>
 <figure markdown>
 ![Tulum, Mexico.](../images/gallery/blueswen-tulum.jpeg){ width="500px"}
 <figcaption>Tulum, Mexico. Credit: Blueswen</figcaption>

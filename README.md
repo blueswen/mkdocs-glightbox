@@ -34,7 +34,9 @@ GLightbox is a pure javascript lightbox library with mobile support.
        - glightbox
     ```
 
-3. You may customize the plugin by passing options in mkdocs.yml:
+3. All images will be added to the lightbox effect automatically, except images in an anchor tag and emoji images from [pymdown-extensions](https://facelessuser.github.io/pymdown-extensions/extensions/emoji/).
+
+4. You may customize the plugin by passing options in mkdocs.yml:
 
     ```yaml
     plugins:
@@ -69,8 +71,15 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 
-4. For more flexibility, you can disable the lightbox with a [specific image](https://blueswen.github.io/mkdocs-glightbox/disable/image/) or a [specific page](https://blueswen.github.io/mkdocs-glightbox/disable/page/).
-5. Support lightbox image caption, check more details on [Caption](https://blueswen.github.io/mkdocs-glightbox/caption/caption/).
+5. For more flexibility, you can disable the lightbox with a [specific image](https://blueswen.github.io/mkdocs-glightbox/disable/image/) or a [specific page](https://blueswen.github.io/mkdocs-glightbox/disable/page/).
+6. Support lightbox image caption, check more details on [Caption](https://blueswen.github.io/mkdocs-glightbox/caption/caption/).
+7. Support grouping images as galleries, check more details on [Gallery](https://blueswen.github.io/mkdocs-glightbox/gallery/gallery/).
+
+## How it works
+
+1. Copy GLightbox script file into `site/assets/javascripts/` directory and CSS file into `site/assets/stylesheets/` directory
+2. Import GLightbox script and CSS file and add javascript code on each page excluded disabled pages
+3. Search all image tags and warp with an anchor tag for GLightbox excluded images with skip class or already warped with an anchor tag
 
 ## License
 

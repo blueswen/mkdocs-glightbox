@@ -9,7 +9,7 @@ markdown_extensions:
   - meta
 ```
 
-Check more detail about ```meta``` on the [official document](https://python-markdown.github.io/extensions/meta_data/).
+Check more details about ```meta``` on the [official document](https://python-markdown.github.io/extensions/meta_data/).
 
 ## Demo
 

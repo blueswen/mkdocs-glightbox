@@ -1,4 +1,10 @@
-# MkDocs GLightbox 
+# MkDocs GLightbox
+
+<p class="text-center" markdown>
+[![PyPI version](https://img.shields.io/pypi/v/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
+[![PyPI downloads](https://img.shields.io/pypi/dm/mkdocs-glightbox.svg)](https://pypi.org/project/mkdocs-glightbox)
+[![Codecov](https://codecov.io/gh/blueswen/mkdocs-glightbox/branch/main/graph/badge.svg?token=KAJS3NU81H)](https://codecov.io/gh/blueswen/mkdocs-glightbox)
+</p>
 
 A MkDocs plugin supports image lightbox with [GLightbox](https://github.com/biati-digital/glightbox).
 
@@ -26,7 +32,9 @@ GLightbox is a pure javascript lightbox library with mobile support.
        - glightbox
     ```
 
-3. You may customize the plugin by passing options in mkdocs.yml:
+3. All images will be added to the lightbox effect automatically, except images in an anchor tag and emoji images from [pymdown-extensions](https://facelessuser.github.io/pymdown-extensions/extensions/emoji/).
+
+4. You may customize the plugin by passing options in mkdocs.yml:
 
     ```yaml
     plugins:
@@ -46,7 +54,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     ```
 
     | Option           | Default | Description                                                                                          |
-    |------------------|---------|------------------------------------------------------------------------------------------------------|
+    | ---------------- | ------- | ---------------------------------------------------------------------------------------------------- |
     | touchNavigation  | true    | Enable or disable the touch navigation (swipe).                                                      |
     | loop             | false   | Loop slides on end.                                                                                  |
     | effect           | zoom    | Name of the effect on lightbox open. (zoom, fade, none)                                              |
@@ -61,8 +69,15 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 
-4. For more flexibility, you can disable lightbox by a [specific image](./disable/image.md) or a [specific page](./disable/page.md).
-5. Support lightbox image caption, check more details on [Caption](./caption/caption.md)
+5. For more flexibility, you can disable the lightbox with a [specific image](./disable/image.md) or a [specific page](./disable/page.md).
+6. Support lightbox image caption, check more details on [Caption](./caption/caption.md).
+7. Support grouping images as galleries, check more details on [Gallery](./gallery/gallery.md).
+
+## How it works
+
+1. Copy GLightbox script file into `site/assets/javascripts/` directory and CSS file into `site/assets/stylesheets/` directory
+2. Import GLightbox script and CSS file and add javascript code on each page excluded disabled pages
+3. Search all image tags and warp with an anchor tag for GLightbox excluded images with skip class or already warped with an anchor tag
 
 ## Demo
 

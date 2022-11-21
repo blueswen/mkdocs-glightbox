@@ -8,6 +8,9 @@ edit_uri: ""
 
 theme:
   name: material
+
+  icon:
+    logo: material/projector
   
   features:
     - toc.integrate
@@ -22,6 +25,8 @@ theme:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: teal
+      accent: teal
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -63,6 +68,7 @@ nav:
     - Sea: taiwan/sea.md
     - Mountain: taiwan/mountain.md
   - Caption: caption/caption.md
+  - Gallery: gallery/gallery.md
   - More Flexibility:
     - Disable by image: disable/image.md
     - Disable by page: disable/page.md
