@@ -8,13 +8,10 @@ edit_uri: ""
 
 theme:
   name: material
-
   icon:
     logo: material/projector
-  
   features:
     - toc.integrate
-  
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
@@ -34,6 +31,8 @@ theme:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: teal
+      accent: teal
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
