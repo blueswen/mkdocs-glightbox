@@ -569,7 +569,27 @@ def test_image_in_anchor(tmp_path):
     path = "../"
     validate_static(contents, path)
     validate_script(contents)
+    assert (
+        re.search(
+            rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+            contents,
+        )
+        is None
+    )
+
+
+def test_image_without_ext(tmp_path):
+    """
+    Image without extension
+    """
+    mkdocs_file = "mkdocs.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/without_ext/index.html"
+    contents = file.read_text(encoding="utf8")
+    path = "../"
+    validate_static(contents, path)
+    validate_script(contents)
     assert re.search(
-        rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox" .* data-type="image" .* href="https://picsum.photos/1200/800"><img .* src="https://picsum.photos/1200/800"\/><\/a>',
         contents,
-    ) is None
+    )

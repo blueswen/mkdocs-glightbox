@@ -110,6 +110,7 @@ class LightboxPlugin(BasePlugin):
             a = soup.new_tag("a")
             a["class"] = "glightbox"
             a["href"] = img.get("src", "")
+            a["data-type"] = "image"
             # setting data-width and data-height with plugin options
             for k, v in plugin_config.items():
                 a[f"data-{k}"] = v
