@@ -1,8 +1,8 @@
 import json
 import logging
 import os
+import re
 
-from bs4 import BeautifulSoup
 from mkdocs import utils
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
@@ -40,57 +40,53 @@ class LightboxPlugin(BasePlugin):
         if "glightbox" in page.meta and page.meta.get("glightbox", True) is False:
             return output
 
-        soup = BeautifulSoup(output, "html.parser")
+        # Define regular expressions for matching the relevant sections of the HTML code
+        head_regex = re.compile(r"<head>(.*?)<\/head>", flags=re.DOTALL)
+        body_regex = re.compile(r"<body(.*?)<\/body>", flags=re.DOTALL)
 
-        if soup.head:
-            css_link = soup.new_tag("link")
-            css_link.attrs["href"] = utils.get_relative_url(
-                utils.normalize_url("assets/stylesheets/glightbox.min.css"), page.url
-            )
-            css_link.attrs["rel"] = "stylesheet"
-            soup.head.append(css_link)
+        # Modify the CSS link
+        css_link = f'<link href="{utils.get_relative_url(utils.normalize_url("assets/stylesheets/glightbox.min.css"), page.url)}" rel="stylesheet"/>'
+        output = head_regex.sub(f"<head>\\1 {css_link}</head>", output)
 
-            css_patch = soup.new_tag("style")
-            css_patch.string = """
-            html.glightbox-open { overflow: initial; height: 100%; }
-            .gslide-title { margin-top: 0px; user-select: text; }
-            .gslide-desc { color: #666; user-select: text; }
-            .gslide-image img { background: white; }
+        # Modify the CSS patch
+        css_patch = """
+        html.glightbox-open { overflow: initial; height: 100%; }
+        .gslide-title { margin-top: 0px; user-select: text; }
+        .gslide-desc { color: #666; user-select: text; }
+        .gslide-image img { background: white; }
+        """
+        if config["theme"].name == "material":
+            css_patch += """
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}
             """
-            if config["theme"].name == "material":
-                css_patch.string += """
-                .gscrollbar-fixer { padding-right: 15px; }
-                .gdesc-inner { font-size: 0.75rem; }
-                body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
-                body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
-                body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}
-                """
-            soup.head.append(css_patch)
+        output = head_regex.sub(f"<head>\\1<style>{css_patch}</style></head>", output)
 
-            js_script = soup.new_tag("script")
-            js_script.attrs["src"] = utils.get_relative_url(
-                utils.normalize_url("assets/javascripts/glightbox.min.js"), page.url
-            )
-            soup.head.append(js_script)
+        # Modify the JS script
+        js_script = f'<script src="{utils.get_relative_url(utils.normalize_url("assets/javascripts/glightbox.min.js"), page.url)}"></script>'
+        output = head_regex.sub(f"<head>\\1 {js_script}</head>", output)
 
-            js_code = soup.new_tag("script")
-            plugin_config = dict(self.config)
-            lb_config = {
-                k: plugin_config[k]
-                for k in ["touchNavigation", "loop", "zoomable", "draggable"]
-            }
-            lb_config["openEffect"] = plugin_config.get("effect", "zoom")
-            lb_config["closeEffect"] = plugin_config.get("effect", "zoom")
-            lb_config["slideEffect"] = plugin_config.get("slide_effect", "slide")
-            js_code.string = f"const lightbox = GLightbox({json.dumps(lb_config)});"
-            if config["theme"].name == "material" or "navigation.instant" in config[
-                "theme"
-            ]._vars.get("features", []):
-                # support compatible with mkdocs-material Instant loading feature
-                js_code.string = "document$.subscribe(() => {" + js_code.string + "})"
-            soup.body.append(js_code)
+        # Modify the JS code
+        plugin_config = dict(self.config)
+        lb_config = {
+            k: plugin_config[k]
+            for k in ["touchNavigation", "loop", "zoomable", "draggable"]
+        }
+        lb_config["openEffect"] = plugin_config.get("effect", "zoom")
+        lb_config["closeEffect"] = plugin_config.get("effect", "zoom")
+        lb_config["slideEffect"] = plugin_config.get("slide_effect", "slide")
+        js_code = f"const lightbox = GLightbox({json.dumps(lb_config)});"
+        if config["theme"].name == "material" or "navigation.instant" in config[
+            "theme"
+        ]._vars.get("features", []):
+            # support compatible with mkdocs-material Instant loading feature
+            js_code = "document$.subscribe(() => {" + js_code + "})"
+        output = body_regex.sub(f"<body\\1<script>{js_code}</script></body>", output)
 
-        return str(soup)
+        return output
 
     def on_page_content(self, html, page, config, **kwargs):
         """Wrap img tag with anchor tag with glightbox class and attributes from config"""
@@ -102,47 +98,76 @@ class LightboxPlugin(BasePlugin):
         skip_class = ["emojione", "twemoji", "gemoji"]
         # skip image with off-glb and specific class
         skip_class += ["off-glb"] + self.config["skip_classes"]
-        soup = BeautifulSoup(html, "html.parser")
-        imgs = soup.find_all("img")
-        for img in imgs:
-            if set(skip_class) & set(img.get("class", [])) or img.parent.name == "a":
-                continue
-            a = soup.new_tag("a")
-            a["class"] = "glightbox"
-            a["href"] = img.get("src", "")
-            a["data-type"] = "image"
-            # setting data-width and data-height with plugin options
-            for k, v in plugin_config.items():
-                a[f"data-{k}"] = v
-            slide_options = ["title", "description", "caption-position", "gallery"]
-            for option in slide_options:
-                attr = f"data-{option}"
-                if attr == "data-title":
-                    # alt as title when auto_caption is enabled
-                    if self.config["auto_caption"] or (
-                        "glightbox.auto_caption" in page.meta
-                        and page.meta.get("glightbox.auto_caption", False) is True
-                    ):
-                        val = img.get("data-title", img.get("alt", ""))
-                    else:
-                        val = img.get("data-title", "")
-                elif attr == "data-caption-position":
-                    # plugin option caption_position as default
-                    val = img.get(
-                        "data-caption-position", self.config["caption_position"]
+
+        # Use regex to find image tags that need to be wrapped with anchor tags and image tags already wrapped with anchor tags
+        pattern = re.compile(
+            r"<a\b[^>]*>(?:\s*<[^>]+>\s*)*<img\b[^>]*>(?:\s*<[^>]+>\s*)*</a>|<img(?P<attr>.*?)>"
+        )
+        html = pattern.sub(
+            lambda match: self.wrap_img_with_anchor(
+                match, plugin_config, skip_class, page.meta
+            ),
+            html,
+        )
+
+        return html
+
+    def wrap_img_with_anchor(self, match, plugin_config, skip_class, meta):
+        """Wrap image tags with anchor tags"""
+        a_pattern = re.compile(r"<a(?P<attr>.*?)>")
+        if a_pattern.match(match.group(0)):
+            return match.group(0)
+
+        img_tag = match.group(0)
+        img_attr = match.group("attr")
+        classes = re.findall(r'class="([^"]+)"', img_attr)
+        classes = [c for match in classes for c in match.split()]
+
+        if set(skip_class) & set(classes):
+            return img_tag
+
+        src = re.search(r"src=[\"\']([^\"\']+)", img_attr).group(1)
+        a_tag = f'<a class="glightbox" href="{src}" data-type="image"'
+        # setting data-width and data-height with plugin options
+        for k, v in plugin_config.items():
+            a_tag += f' data-{k}="{v}"'
+        slide_options = [
+            "title",
+            "description",
+            "caption-position",
+            "gallery",
+        ]
+        for option in slide_options:
+            attr = f"data-{option}"
+            if attr == "data-title":
+                val = re.search(r"data-title=[\"\']([^\"\']+)", img_attr)
+                if self.config["auto_caption"] or (
+                    "glightbox.auto_caption" in meta
+                    and meta.get("glightbox.auto_caption", False) is True
+                ):
+                    val = (
+                        val.group(1)
+                        if val
+                        else re.search(r"alt=[\"\']([^\"\']+)", img_attr).group(1)
                     )
                 else:
-                    val = img.get(attr, "")
+                    val = val.group(1) if val else ""
+            elif attr == "data-caption-position":
+                val = re.search(r"data-caption-position=[\"\']([^\"\']+)", img_attr)
+                val = val.group(1) if val else self.config["caption_position"]
+            else:
+                val = re.search(f"{attr}=[\"']([^\"']+)", img_attr)
+                val = val.group(1) if val else ""
 
-                # skip val is empty
-                if val != "":
-                    # convert data-caption-position to data-desc-position
-                    if attr == "data-caption-position":
-                        a["data-desc-position"] = val
-                    else:
-                        a[attr] = val
-            img.wrap(a)
-        return str(soup)
+            # skip val is empty
+            if val != "":
+                # convert data-caption-position to data-desc-position
+                if attr == "data-caption-position":
+                    a_tag += f' data-desc-position="{val}"'
+                else:
+                    a_tag += f' {attr}="{val}"'
+        a_tag += f">{img_tag}</a>"
+        return a_tag
 
     def on_post_build(self, config, **kwargs):
         """Copy glightbox"s css and js files to assets directory"""

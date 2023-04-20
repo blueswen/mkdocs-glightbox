@@ -122,14 +122,14 @@ def validate_static(html_content: str, path: str = "", exist: bool = True):
     """
     assert exist == (
         re.search(
-            rf'<link href="{path}assets\/stylesheets\/glightbox\.min\.css" rel="stylesheet"\/>',
+            rf'<link href="{re.escape(path)}assets\/stylesheets\/glightbox\.min\.css" rel="stylesheet"\/>',
             html_content,
         )
         is not None
     )
     assert exist == (
         re.search(
-            rf'<script src="{path}assets\/javascripts\/glightbox\.min\.js"><\/script>',
+            rf'<script src="{re.escape(path)}assets\/javascripts\/glightbox\.min\.js"><\/script>',
             html_content,
         )
         is not None
@@ -167,7 +167,7 @@ def test_basic(tmp_path):
     validate_static(contents)
     validate_script(contents)
     assert re.search(
-        r'<a class="glightbox" .* href="img.png"><img .* src="img.png"\/><\/a>',
+        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -187,7 +187,7 @@ def test_material(tmp_path):
         contents,
     )
     assert re.search(
-        r'<a class="glightbox" .* href="img.png"><img .* src="img.png"\/><\/a>',
+        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -206,7 +206,7 @@ def test_use_directory_urls(tmp_path):
     validate_static(contents, path=path)
     validate_script(contents)
     assert re.search(
-        rf'<a class="glightbox" .* href="{path}img.png"><img .* src="../img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?>\s*<img.*?src="\.\.\/img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -223,7 +223,7 @@ def test_disable_by_page(tmp_path):
     validate_script(contents, exist=False)
     assert (
         re.search(
-            r'<a class="glightbox" .* href="img.png"><img .* src="img.png"\/><\/a>',
+            r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
             contents,
         )
         is None
@@ -242,15 +242,15 @@ def test_disable_by_image(tmp_path):
     validate_static(contents, path=path)
     validate_script(contents)
     assert re.search(
-        rf'<p><img .* class="off-glb" src="{path}img.png"\/><\/p>',
+        rf'<p><img.*?class="off-glb".*?src="{re.escape(path)}img\.png".*?\/><\/p>',
         contents,
     )
     assert re.search(
-        rf'<p><img .* class="skip-lightbox" src="{path}img.png"\/><\/p>',
+        rf'<p><img.*?class="skip-lightbox".*?src="{re.escape(path)}img\.png".*?\/><\/p>',
         contents,
     )
     assert re.search(
-        rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -268,7 +268,7 @@ def test_disable_with_emoji(emoji_name, tmp_path):
     validate_static(contents, path="../")
     validate_script(contents)
     assert re.search(
-        rf'<p><img .* class="{emoji_name}" .*\/>.*<\/p>',
+        rf'<p><img.*?class="{re.escape(emoji_name)}".*?\/>.*?<\/p>',
         contents,
     )
 
@@ -283,9 +283,9 @@ def test_url(tmp_path):
     contents = file.read_text(encoding="utf8")
     validate_static(contents, path="../")
     validate_script(contents)
-    image_url = "https://dummyimage.com/600x400/bdc3c7/fff.png"
+    image_url = re.escape("https://dummyimage.com/600x400/bdc3c7/fff.png")
     assert re.search(
-        rf'<a class="glightbox" .* href="{image_url}"><img .* src="{image_url}"\/><\/a>',
+        rf'<a class="glightbox".*?href="{image_url}".*?><img.*?src="{image_url}".*?\/><\/a>',
         contents,
     )
 
@@ -302,7 +302,7 @@ def test_default_options(tmp_path):
     validate_static(contents, path)
     validate_script(contents)
     regex_obj = re.search(
-        rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png.*?"><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -339,7 +339,7 @@ def test_options(tmp_path):
     validate_script(contents)
     # validate slide options
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -380,7 +380,7 @@ def test_gallery(tmp_path):
     validate_static(contents, path=path)
     validate_script(contents)
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}img.png"><img alt="image-a" .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-a".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -388,7 +388,7 @@ def test_gallery(tmp_path):
     assert 'data-gallery="1"' in text
 
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}img.png"><img alt="image-b" .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-b".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -396,7 +396,7 @@ def test_gallery(tmp_path):
     assert 'data-gallery="1"' in text
 
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}another-img.png"><img alt="image-c" .* src="{path}another-img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}another-img\.png"(.*?)><img alt="image-c".*?src="{re.escape(path)}another-img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -404,7 +404,7 @@ def test_gallery(tmp_path):
     assert 'data-gallery="2"' in text
 
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}another-img.png"><img alt="image-d" .* src="{path}another-img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}another-img\.png"(.*?)><img alt="image-d".*?src="{re.escape(path)}another-img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -426,7 +426,7 @@ def test_caption(tmp_path):
 
     # validate title and description
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}img.png"><img alt="image-default" .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-default".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -436,7 +436,7 @@ def test_caption(tmp_path):
 
     # validate position
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}img.png"><img alt="image-right" .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-right".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -445,7 +445,7 @@ def test_caption(tmp_path):
 
     # validate compatible with figure
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}img.png"><img alt="image-figure" .* src="{path}img.png"\/><\/a><\/p>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-figure".*?src="{re.escape(path)}img\.png".*?\/><\/a><\/p>',
         contents,
     )
     assert regex_obj
@@ -467,7 +467,7 @@ def test_auto_caption_by_page(tmp_path):
     validate_script(contents)
     # validate title and description
     regex_obj = re.search(
-        rf'<a class="glightbox" (.*) href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -486,7 +486,7 @@ def test_auto_caption(tmp_path):
     validate_static(contents)
     validate_script(contents)
     regex_obj = re.search(
-        r'<a class="glightbox" (.*) href="img.png"><img .* src="img.png"\/><\/a>',
+        r'<a class="glightbox".*?href="img\.png"(.*?)><img.*?src="img\.png".*?\/><\/a>',
         contents,
     )
     assert regex_obj
@@ -513,7 +513,7 @@ def test_material_template(tmp_path):
         contents,
     )
     assert re.search(
-        r'<a class="glightbox" .* href="img.png"><img .* src="img.png"\/><\/a>',
+        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -529,7 +529,7 @@ def test_site_url(tmp_path):
     validate_static(contents)
     validate_script(contents)
     assert re.search(
-        r'<a class="glightbox" .* href="img.png"><img .* src="img.png"\/><\/a>',
+        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -539,7 +539,7 @@ def test_site_url(tmp_path):
     validate_static(contents, path)
     validate_script(contents)
     assert re.search(
-        rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
 
@@ -571,7 +571,7 @@ def test_image_in_anchor(tmp_path):
     validate_script(contents)
     assert (
         re.search(
-            rf'<a class="glightbox" .* href="{path}img.png"><img .* src="{path}img.png"\/><\/a>',
+            rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
             contents,
         )
         is None
@@ -590,6 +590,6 @@ def test_image_without_ext(tmp_path):
     validate_static(contents, path)
     validate_script(contents)
     assert re.search(
-        rf'<a class="glightbox" .* data-type="image" .* href="https://picsum.photos/1200/800"><img .* src="https://picsum.photos/1200/800"\/><\/a>',
+        r'<a class="glightbox".*?href="https://picsum\.photos/1200/800".*?data-type="image".*?><img.*?src="https://picsum\.photos/1200/800".*?\/><\/a>',
         contents,
     )
