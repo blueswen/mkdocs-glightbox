@@ -12,9 +12,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
 ## Dependency
 
-1. Python Package
-    1. beautifulsoup4>=4.11.1
-2. GLightbox javascript file and css file
+1. GLightbox javascript file and css file
     1. GLightbox==3.2.0
 
 ## Usage
