@@ -114,60 +114,66 @@ class LightboxPlugin(BasePlugin):
 
     def wrap_img_with_anchor(self, match, plugin_config, skip_class, meta):
         """Wrap image tags with anchor tags"""
-        a_pattern = re.compile(r"<a(?P<attr>.*?)>")
-        if a_pattern.match(match.group(0)):
-            return match.group(0)
+        try:
+            a_pattern = re.compile(r"<a(?P<attr>.*?)>")
+            if a_pattern.match(match.group(0)):
+                return match.group(0)
 
-        img_tag = match.group(0)
-        img_attr = match.group("attr")
-        classes = re.findall(r'class="([^"]+)"', img_attr)
-        classes = [c for match in classes for c in match.split()]
+            img_tag = match.group(0)
+            img_attr = match.group("attr")
+            classes = re.findall(r'class="([^"]+)"', img_attr)
+            classes = [c for match in classes for c in match.split()]
 
-        if set(skip_class) & set(classes):
-            return img_tag
+            if set(skip_class) & set(classes):
+                return img_tag
 
-        src = re.search(r"src=[\"\']([^\"\']+)", img_attr).group(1)
-        a_tag = f'<a class="glightbox" href="{src}" data-type="image"'
-        # setting data-width and data-height with plugin options
-        for k, v in plugin_config.items():
-            a_tag += f' data-{k}="{v}"'
-        slide_options = [
-            "title",
-            "description",
-            "caption-position",
-            "gallery",
-        ]
-        for option in slide_options:
-            attr = f"data-{option}"
-            if attr == "data-title":
-                val = re.search(r"data-title=[\"\']([^\"\']+)", img_attr)
-                if self.config["auto_caption"] or (
-                    "glightbox.auto_caption" in meta
-                    and meta.get("glightbox.auto_caption", False) is True
-                ):
-                    val = (
-                        val.group(1)
-                        if val
-                        else re.search(r"alt=[\"\']([^\"\']+)", img_attr).group(1)
-                    )
+            src = re.search(r"src=[\"\']([^\"\']+)", img_attr).group(1)
+            a_tag = f'<a class="glightbox" href="{src}" data-type="image"'
+            # setting data-width and data-height with plugin options
+            for k, v in plugin_config.items():
+                a_tag += f' data-{k}="{v}"'
+            slide_options = [
+                "title",
+                "description",
+                "caption-position",
+                "gallery",
+            ]
+            for option in slide_options:
+                attr = f"data-{option}"
+                if attr == "data-title":
+                    val = re.search(r"data-title=[\"]([^\"]+)", img_attr)
+                    if self.config["auto_caption"] or (
+                        "glightbox.auto_caption" in meta
+                        and meta.get("glightbox.auto_caption", False) is True
+                    ):
+                        if val:
+                            val = val.group(1)
+                        else:
+                            val = re.search(r"alt=[\"]([^\"]+)", img_attr)
+                            val = val.group(1) if val else ""
+                    else:
+                        val = val.group(1) if val else ""
+                elif attr == "data-caption-position":
+                    val = re.search(r"data-caption-position=[\"]([^\"]+)", img_attr)
+                    val = val.group(1) if val else self.config["caption_position"]
                 else:
+                    val = re.search(f'{attr}=["]([^"]+)', img_attr)
                     val = val.group(1) if val else ""
-            elif attr == "data-caption-position":
-                val = re.search(r"data-caption-position=[\"\']([^\"\']+)", img_attr)
-                val = val.group(1) if val else self.config["caption_position"]
-            else:
-                val = re.search(f"{attr}=[\"']([^\"']+)", img_attr)
-                val = val.group(1) if val else ""
 
-            # skip val is empty
-            if val != "":
-                # convert data-caption-position to data-desc-position
-                if attr == "data-caption-position":
-                    a_tag += f' data-desc-position="{val}"'
-                else:
-                    a_tag += f' {attr}="{val}"'
-        a_tag += f">{img_tag}</a>"
-        return a_tag
+                # skip val is empty
+                if val != "":
+                    # convert data-caption-position to data-desc-position
+                    if attr == "data-caption-position":
+                        a_tag += f' data-desc-position="{val}"'
+                    else:
+                        a_tag += f' {attr}="{val}"'
+            a_tag += f">{img_tag}</a>"
+            return a_tag
+        except Exception as e:
+            log.warning(
+                f"Error in wrapping img tag with anchor tag: {e} {match.group(0)}"
+            )
+            return match.group(0)
 
     def on_post_build(self, config, **kwargs):
         """Copy glightbox"s css and js files to assets directory"""

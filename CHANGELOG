@@ -1,3 +1,7 @@
+mkdocs-glightbox-0.3.4 (2023-04-25)
+
+    * Fixed regex bug: quote issue and empty alt issue (#14 #19)
+
 mkdocs-glightbox-0.3.3 (2023-04-20)
 
     * Refactored processing logic with regex (#14)
