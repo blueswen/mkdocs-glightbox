@@ -593,3 +593,19 @@ def test_image_without_ext(tmp_path):
         r'<a class="glightbox".*?href="https://picsum\.photos/1200/800".*?data-type="image".*?><img.*?src="https://picsum\.photos/1200/800".*?\/><\/a>',
         contents,
     )
+
+
+def test_error(tmp_path):
+    """
+    Wrapping for error
+    """
+    mkdocs_file = "mkdocs-error.yml"
+    testproject_path = validate_mkdocs_file(
+        tmp_path,
+        f"tests/fixtures/{mkdocs_file}",
+        docs_path="tests/fixtures/error_docs",
+    )
+    file = testproject_path / "site/index.html"
+    contents = file.read_text(encoding="utf8")
+    validate_static(contents)
+    validate_script(contents)

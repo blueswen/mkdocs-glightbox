@@ -1,0 +1,1 @@
+<img data-title="example" />
