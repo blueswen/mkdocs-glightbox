@@ -34,6 +34,14 @@ class LightboxPlugin(BasePlugin):
         ),
     )
 
+    def on_config(self, config):
+        self.using_material = config["theme"].name == "material"
+        self.using_material_privacy = (
+            self.using_material
+            and "material/privacy" in config["plugins"]
+            and config["plugins"]["material/privacy"].config.enabled
+        )
+
     def on_post_page(self, output, page, config, **kwargs):
         """Add css link tag, javascript script tag, and javascript code to initialize GLightbox"""
         # skip page with meta glightbox is false
@@ -78,10 +86,17 @@ class LightboxPlugin(BasePlugin):
         lb_config["openEffect"] = plugin_config.get("effect", "zoom")
         lb_config["closeEffect"] = plugin_config.get("effect", "zoom")
         lb_config["slideEffect"] = plugin_config.get("slide_effect", "slide")
-        js_code = f"const lightbox = GLightbox({json.dumps(lb_config)});"
-        if config["theme"].name == "material" or "navigation.instant" in config[
-            "theme"
-        ]._vars.get("features", []):
+        js_code = ""
+        if self.using_material_privacy:
+            js_code += """document.querySelectorAll('.glightbox').forEach(function(element) {
+    var imgSrc = element.querySelector('img').src;
+    element.setAttribute('href', imgSrc);
+});
+"""
+        js_code += f"const lightbox = GLightbox({json.dumps(lb_config)});"
+        if self.using_material or "navigation.instant" in config["theme"]._vars.get(
+            "features", []
+        ):
             # support compatible with mkdocs-material Instant loading feature
             js_code = "document$.subscribe(() => {" + js_code + "})"
         output = body_regex.sub(f"<body\\1<script>{js_code}</script></body>", output)
@@ -127,8 +142,12 @@ class LightboxPlugin(BasePlugin):
             if set(skip_class) & set(classes):
                 return img_tag
 
-            src = re.search(r"src=[\"\']([^\"\']+)", img_attr).group(1)
-            a_tag = f'<a class="glightbox" href="{src}" data-type="image"'
+            if self.using_material_privacy:
+                # skip href attribute if using material privacy plugin, will be set by js code
+                a_tag = '<a class="glightbox" data-type="image"'
+            else:
+                src = re.search(r"src=[\"\']([^\"\']+)", img_attr).group(1)
+                a_tag = f'<a class="glightbox" href="{src}" data-type="image"'
             # setting data-width and data-height with plugin options
             for k, v in plugin_config.items():
                 a_tag += f' data-{k}="{v}"'

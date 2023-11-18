@@ -1,11 +1,11 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
     name="mkdocs-glightbox",
-    version="0.3.4",
+    version="0.3.5",
     author="Blueswen",
     author_email="blueswen.tw@gmail.com",
     url="https://blueswen.github.io/mkdocs-glightbox",

@@ -1,3 +1,7 @@
+mkdocs-glightbox-0.3.5 (2023-11-18)
+
+    * Supported compatibility with the privacy plugin of Material for MkDocs insiders (#25)
+
 mkdocs-glightbox-0.3.4 (2023-04-25)
 
     * Fixed regex bug: quote issue and empty alt issue (#14 #19)
