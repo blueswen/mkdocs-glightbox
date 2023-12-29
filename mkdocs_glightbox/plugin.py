@@ -22,7 +22,7 @@ class LightboxPlugin(BasePlugin):
             "slide_effect",
             config_options.Choice(("slide", "zoom", "fade", "none"), default="slide"),
         ),
-        ("width", config_options.Type(str, default="100%")),
+        ("width", config_options.Type(str, default="auto")),
         ("height", config_options.Type(str, default="auto")),
         ("zoomable", config_options.Type(bool, default=True)),
         ("draggable", config_options.Type(bool, default=True)),

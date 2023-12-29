@@ -49,7 +49,7 @@
                 "title": "Width for inline elements and iframes",
                 "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
                 "type": "string",
-                "default": "100%"
+                "default": "auto"
               },
               "height": {
                 "title": "Height for inline elements and iframes",
