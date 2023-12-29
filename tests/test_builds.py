@@ -4,12 +4,12 @@ import os
 import re
 import shutil
 
-# MkDocs
-from mkdocs.__main__ import build_command
-
 # other 3rd party
 import pytest
 from click.testing import CliRunner
+
+# MkDocs
+from mkdocs.__main__ import build_command
 
 # ##################################
 # ######## Globals #################
@@ -609,3 +609,27 @@ def test_error(tmp_path):
     contents = file.read_text(encoding="utf8")
     validate_static(contents)
     validate_script(contents)
+
+
+def test_privacy(tmp_path):
+    """
+    Compatible with material privacy plugin
+    """
+    mkdocs_file = "mkdocs-material-privacy.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/url/index.html"
+    contents = file.read_text(encoding="utf8")
+    validate_static(contents, path="../")
+    validate_script(contents)
+    image_url = re.escape("../assets/external/dummyimage.com/600x400/bdc3c7/fff.png")
+    assert re.search(
+        rf'<a class="glightbox"(?!.*href=).*?><img.*?src="{image_url}".*?><\/a>',
+        contents,
+    )
+    patch_script = re.escape(
+        "document.querySelectorAll('.glightbox').forEach(function(element) {"
+    )
+    assert re.search(
+        rf"{patch_script}",
+        contents,
+    )
