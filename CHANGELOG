@@ -1,3 +1,8 @@
+mkdocs-glightbox-0.3.6 (2023-12-30)
+
+    * Modified width default to auto prevent zooming large image bug (#21)
+    * Supported only enable glightbox with on-glb class in given page (#28)
+
 mkdocs-glightbox-0.3.5 (2023-11-18)
 
     * Supported compatibility with the privacy plugin of Material for MkDocs insiders (#25)
