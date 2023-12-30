@@ -71,3 +71,4 @@ nav:
   - More Flexibility:
     - Disable by image: disable/image.md
     - Disable by page: disable/page.md
+    - Enable by image: disable/manual.md
