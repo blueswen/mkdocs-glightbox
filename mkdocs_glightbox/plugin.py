@@ -139,8 +139,12 @@ class LightboxPlugin(BasePlugin):
             classes = re.findall(r'class="([^"]+)"', img_attr)
             classes = [c for match in classes for c in match.split()]
 
-            if set(skip_class) & set(classes):
-                return img_tag
+            if meta.get("glightbox-manual", False):
+                if "on-glb" not in classes:
+                    return img_tag
+            else:
+                if set(skip_class) & set(classes):
+                    return img_tag
 
             if self.using_material_privacy:
                 # skip href attribute if using material privacy plugin, will be set by js code

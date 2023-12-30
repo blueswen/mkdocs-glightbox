@@ -633,3 +633,24 @@ def test_privacy(tmp_path):
         rf"{patch_script}",
         contents,
     )
+
+
+def test_enable_by_image(tmp_path):
+    """
+    Enable by the image with on-glb class
+    """
+    mkdocs_file = "mkdocs-material.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/enable_by_image/index.html"
+    contents = file.read_text(encoding="utf8")
+    path = "../"
+    validate_static(contents, path=path)
+    validate_script(contents)
+    assert re.search(
+        rf'<p><img alt="image" src="{re.escape(path)}img\.png" \/><\/p>',
+        contents,
+    )
+    assert re.search(
+        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?class="on-glb".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
+        contents,
+    )
