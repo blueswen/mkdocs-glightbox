@@ -49,21 +49,25 @@ GLightbox is a pure javascript lightbox library with mobile support.
              - custom-skip-class-name
            auto_caption: false
            caption_position: bottom
+           background: white
+           shadow: true
     ```
 
-    | Option           | Default | Description                                                                                          |
-    | ---------------- | ------- | ---------------------------------------------------------------------------------------------------- |
-    | touchNavigation  | true    | Enable or disable the touch navigation (swipe).                                                      |
-    | loop             | false   | Loop slides on end.                                                                                  |
-    | effect           | zoom    | Name of the effect on lightbox open. (zoom, fade, none)                                              |
-    | slide_effect     | slide   | Name of the effect on lightbox slide. (slide, zoom, fade, none)                                      |
-    | width            | 100%    | Width for inline elements and iframes. You can use any unit for example 90% or 100vw for full width. |
-    | height           | auto    | Height for inline elements and iframes. You can use any unit for example 90%, 100vh or auto.         |
-    | zoomable         | true    | Enable or disable zoomable images.                                                                   |
-    | draggable        | true    | Enable or disable mouse drag to go prev and next slide.                                              |
-    | skip_classes     | [ ]     | Disable lightbox of those image with specific custom class name.                                     |
-    | auto_caption     | false   | Enable or disable using alt of image as caption title automatically.                                 |
-    | caption_position | bottom  | Default captions position. (bottom, top, left, right)                                                |
+    | Option | Default | Description |
+    |---|---|---|
+    | touchNavigation | true | Enable or disable the touch navigation (swipe). |
+    | loop | false | Loop slides on end. |
+    | effect | zoom | Name of the effect on lightbox open. (zoom, fade, none) |
+    | slide_effect | slide | Name of the effect on lightbox slide. (slide, zoom, fade, none) |
+    | width | auto | Width for inline elements and iframes. You can use any unit for example 90% or 100vw for full width. |
+    | height | auto | Height for inline elements and iframes. You can use any unit for example 90%, 100vh or auto. |
+    | zoomable | true | Enable or disable zoomable images. |
+    | draggable | true | Enable or disable mouse drag to go prev and next slide. |
+    | skip_classes | [ ] | Disable lightbox of those image with specific custom class name. |
+    | auto_caption | false | Enable or disable using alt of image as caption title automatically. |
+    | caption_position | bottom | Default captions position. (bottom, top, left, right) |
+    | background | white | The background CSS of lightbox image. The background will shown when the image is transparent. You can use any CSS value for the background for example `#74b9ff` or `Gainsboro` or `none` for nothing. |
+    | shadow | true | Enable or disable the shadow of lightbox image. Disable it when the background is `none` to prevent shadow around the transparent image. |
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 
