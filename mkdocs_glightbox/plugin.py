@@ -32,6 +32,8 @@ class LightboxPlugin(BasePlugin):
             "caption_position",
             config_options.Choice(("bottom", "top", "left", "right"), default="bottom"),
         ),
+        ("background", config_options.Type(str, default="white")),
+        ("shadow", config_options.Type(bool, default=True)),
     )
 
     def on_config(self, config):
@@ -58,19 +60,24 @@ class LightboxPlugin(BasePlugin):
 
         # Modify the CSS patch
         css_patch = """
-        html.glightbox-open { overflow: initial; height: 100%; }
-        .gslide-title { margin-top: 0px; user-select: text; }
-        .gslide-desc { color: #666; user-select: text; }
-        .gslide-image img { background: white; }
-        """
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }"""
+        css_patch += f"""
+    .gslide-image img {{ background: {self.config['background']}; }}"""
+        if not self.config["shadow"]:
+            css_patch += """
+    .glightbox-clean .gslide-media {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }"""
         if config["theme"].name == "material":
             css_patch += """
-            .gscrollbar-fixer { padding-right: 15px; }
-            .gdesc-inner { font-size: 0.75rem; }
-            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
-            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
-            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}
-            """
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}"""
         output = head_regex.sub(f"<head>\\1<style>{css_patch}</style></head>", output)
 
         # Modify the JS script

@@ -92,6 +92,18 @@
                   "bottom", "top", "left", "right"
                 ],
                 "default": "bottom"
+              },
+              "background": {
+                "title": "Background CSS of lightbox image",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "string",
+                "default": "white"
+              },
+              "shadow": {
+                "title": "Enable the shadow of lightbox image",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "boolean",
+                "default": true
               }
             },
             "additionalProperties": false

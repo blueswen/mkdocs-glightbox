@@ -13,3 +13,5 @@ plugins:
         draggable: false
         caption_position: right
         auto_caption: true
+        background: none
+        shadow: false

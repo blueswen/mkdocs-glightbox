@@ -1,3 +1,7 @@
+mkdocs-glightbox-0.3.7 (2023-01-24)
+
+    * Supported custom background and shadow (#27)
+
 mkdocs-glightbox-0.3.6 (2023-12-30)
 
     * Modified width default to auto prevent zooming large image bug (#21)

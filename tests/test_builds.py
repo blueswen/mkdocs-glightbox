@@ -337,6 +337,15 @@ def test_options(tmp_path):
     path = "../"
     validate_static(contents, path)
     validate_script(contents)
+    # validate override style
+    assert ".gslide-image img { background: none; }" in contents
+    assert (
+        """.glightbox-clean .gslide-media {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }"""
+        in contents
+    )
     # validate slide options
     regex_obj = re.search(
         rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
