@@ -15,3 +15,4 @@ plugins:
         auto_caption: true
         background: none
         shadow: false
+        manual: false
