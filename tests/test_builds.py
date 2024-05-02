@@ -183,7 +183,7 @@ def test_material(tmp_path):
     validate_static(contents)
     validate_script(contents)
     assert re.search(
-        r"document\$\.subscribe\(\(\) => {const lightbox = GLightbox\((.*)\);}\)",
+        r"document\$\.subscribe\(\(\) => { lightbox.reload\(\) }\);",
         contents,
     )
     assert re.search(
@@ -518,7 +518,7 @@ def test_material_template(tmp_path):
     validate_static(contents)
     validate_script(contents)
     assert re.search(
-        r"document\$\.subscribe\(\(\) => {const lightbox = GLightbox\((.*)\);}\)",
+        r"document\$\.subscribe\(\(\) => { lightbox.reload\(\) }\);",
         contents,
     )
     assert re.search(
