@@ -106,7 +106,7 @@ class LightboxPlugin(BasePlugin):
         ):
             # support compatible with mkdocs-material Instant loading feature
             js_code += "document$.subscribe(() => { lightbox.reload() });\n"
-        output = body_regex.sub(f"<body\\1<script>{js_code}</script></body>", output)
+        output = body_regex.sub(f'<body\\1<script id="init-glightbox">{js_code}</script></body>', output)
 
         return output
 
