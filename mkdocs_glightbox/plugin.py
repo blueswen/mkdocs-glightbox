@@ -96,8 +96,16 @@ class LightboxPlugin(BasePlugin):
         js_code = ""
         if self.using_material_privacy:
             js_code += """document.querySelectorAll('.glightbox').forEach(function(element) {
-    var imgSrc = element.querySelector('img').src;
-    element.setAttribute('href', imgSrc);
+    try {
+        var img = element.querySelector('img');
+        if (img && img.src) {
+            element.setAttribute('href', img.src);
+        } else {
+            console.log('No img element with src attribute found');
+        }
+    } catch (error) {
+        console.log('Error:', error);
+    }
 });
 """
         js_code += f"const lightbox = GLightbox({json.dumps(lb_config)});\n"
