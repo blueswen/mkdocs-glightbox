@@ -101,12 +101,14 @@ class LightboxPlugin(BasePlugin):
 });
 """
         js_code += f"const lightbox = GLightbox({json.dumps(lb_config)});\n"
-        if self.using_material or "navigation.instant" in config["theme"]._vars.get(
+        if self.using_material or "navigation.instant" in config["theme"].get(
             "features", []
         ):
             # support compatible with mkdocs-material Instant loading feature
             js_code += "document$.subscribe(() => { lightbox.reload() });\n"
-        output = body_regex.sub(f'<body\\1<script id="init-glightbox">{js_code}</script></body>', output)
+        output = body_regex.sub(
+            f'<body\\1<script id="init-glightbox">{js_code}</script></body>', output
+        )
 
         return output
 
