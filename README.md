@@ -53,6 +53,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
            caption_position: bottom
            background: white
            shadow: true
+           manual: false
     ```
 
     | Option | Default | Description |
@@ -70,6 +71,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     | caption_position | bottom | Default captions position. (bottom, top, left, right) |
     | background | white | The background CSS of lightbox image. The background will shown when the image is transparent. You can use any CSS value for the background for example `#74b9ff` or `Gainsboro` or `none` for nothing. |
     | shadow | true | Enable or disable the shadow of lightbox image. Disable it when the background is `none` to prevent shadow around the transparent image. |
+    | manual | false | When true, lightbox has to be enabled for each image manually by adding 'on-glb' class to it. |
 
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 

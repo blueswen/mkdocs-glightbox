@@ -104,6 +104,12 @@
                 "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
                 "type": "boolean",
                 "default": true
+              },
+              "manual": {
+                "title": "When true, lightbox has to be enabled for each image manually by adding 'on-glb' class to it",
+                "markdownDescription": "https://blueswen.github.io/mkdocs-glightbox/#usage",
+                "type": "boolean",
+                "default": false
               }
             },
             "additionalProperties": false

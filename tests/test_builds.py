@@ -663,3 +663,31 @@ def test_enable_by_image(tmp_path):
         rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?class="on-glb".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
         contents,
     )
+
+
+def test_manual(tmp_path):
+    """
+    Manual mode
+    """
+    mkdocs_file = "mkdocs-manual.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/index.html"
+    contents = file.read_text(encoding="utf8")
+    validate_static(contents)
+    validate_script(contents)
+    assert (
+        re.search(
+            r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
+            contents,
+        )
+        is None
+    )
+
+    file = testproject_path / "site/manual/index.html"
+    contents = file.read_text(encoding="utf8")
+    validate_static(contents, path="../")
+    validate_script(contents)
+    assert re.search(
+        r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?src="..\/img\.png".*?\/><\/a>',
+        contents,
+    )

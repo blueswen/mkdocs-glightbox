@@ -34,6 +34,7 @@ class LightboxPlugin(BasePlugin):
         ),
         ("background", config_options.Type(str, default="white")),
         ("shadow", config_options.Type(bool, default=True)),
+        ("manual", config_options.Type(bool, default=False)),
     )
 
     def on_config(self, config):
@@ -156,7 +157,7 @@ class LightboxPlugin(BasePlugin):
             classes = re.findall(r'class="([^"]+)"', img_attr)
             classes = [c for match in classes for c in match.split()]
 
-            if meta.get("glightbox-manual", False):
+            if meta.get("glightbox-manual", False) or self.config["manual"]:
                 if "on-glb" not in classes:
                     return img_tag
             else:
