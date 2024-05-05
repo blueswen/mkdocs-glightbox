@@ -79,6 +79,9 @@ GLightbox is a pure javascript lightbox library with mobile support.
 6. Support lightbox image caption, check more details on [Caption](https://blueswen.github.io/mkdocs-glightbox/caption/caption/).
 7. Support grouping images as galleries, check more details on [Gallery](https://blueswen.github.io/mkdocs-glightbox/gallery/gallery/).
 
+> [!NOTE] 
+> If this is your first time using the MkDocs plugin feature, you should know that MkDocs includes a default plugin named `search`. If you want to keep the search feature, you need to add the `search` plugin back to the `plugins` list.
+
 ## How it works
 
 1. Copy GLightbox script file into `site/assets/javascripts/` directory and CSS file into `site/assets/stylesheets/` directory
