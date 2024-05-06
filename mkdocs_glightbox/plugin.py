@@ -157,12 +157,19 @@ class LightboxPlugin(BasePlugin):
             classes = re.findall(r'class="([^"]+)"', img_attr)
             classes = [c for match in classes for c in match.split()]
 
-            if meta.get("glightbox-manual", False) or self.config["manual"]:
-                if "on-glb" not in classes:
-                    return img_tag
-            else:
+            if self.config["manual"] and meta.get("glightbox", None) is True:
+                # with manual mode but enable glightbox in page meta
                 if set(skip_class) & set(classes):
+                    # skip image with off-glb and specific class
                     return img_tag
+            elif meta.get("glightbox-manual", False) or self.config["manual"]:
+                # disable by page meta or global config
+                if "on-glb" not in classes:
+                    # skip image without on-glb class
+                    return img_tag
+            elif set(skip_class) & set(classes):
+                # skip image with off-glb and specific class
+                return img_tag
 
             if self.using_material_privacy:
                 # skip href attribute if using material privacy plugin, will be set by js code

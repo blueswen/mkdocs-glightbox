@@ -192,6 +192,26 @@ def test_material(tmp_path):
     )
 
 
+def test_material_instant(tmp_path):
+    """
+    Integrate with Material for MkDocs
+    """
+    mkdocs_file = "mkdocs-material-instant.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/index.html"
+    contents = file.read_text(encoding="utf8")
+    validate_static(contents)
+    validate_script(contents)
+    assert re.search(
+        r"document\$\.subscribe\(\(\) => { lightbox.reload\(\) }\);",
+        contents,
+    )
+    assert re.search(
+        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
+        contents,
+    )
+
+
 def test_use_directory_urls(tmp_path):
     """
     Compatible with use_directory_urls is false or with --use-directory-urls and --use-directory-urls as args
@@ -689,5 +709,27 @@ def test_manual(tmp_path):
     validate_script(contents)
     assert re.search(
         r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?src="..\/img\.png".*?\/><\/a>',
+        contents,
+    )
+
+    file = testproject_path / "site/manual_enable_by_page/index.html"
+    contents = file.read_text(encoding="utf8")
+    validate_static(contents, path="../")
+    validate_script(contents)
+    assert re.search(
+        r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?alt="image-a" src="..\/img\.png".*?\/><\/a>',
+        contents,
+    )
+
+    assert (
+        re.search(
+            r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?alt="image-b" src="..\/img\.png".*?\/><\/a>',
+            contents,
+        )
+        is None
+    )
+
+    assert re.search(
+        r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?alt="image-c" src="..\/img\.png".*?\/><\/a>',
         contents,
     )

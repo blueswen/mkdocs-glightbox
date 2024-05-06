@@ -69,6 +69,7 @@ nav:
   - Caption: caption/caption.md
   - Gallery: gallery/gallery.md
   - More Flexibility:
-    - Disable by image: disable/image.md
-    - Disable by page: disable/page.md
-    - Enable by image: disable/manual.md
+    - Disable by image: flexibility/disable-by-image.md
+    - Disable by page: flexibility/disable-by-page.md
+    - Enable by image: flexibility/disable-by-page-enable-by-image.md
+    - Disable globally but enable by image or page: flexibility/enable-by-image-or-page.md
