@@ -1,3 +1,11 @@
+mkdocs-glightbox-0.4.0 (2023-05-06)
+
+    * Supported manual mode (#29)
+    * Allow calling lightbox methods from other places (#34)
+    * Added id to appended script tag (#38)
+    * Access theme attribute directly (#40)
+    * Better JavaScript Error Handling (#36)
+
 mkdocs-glightbox-0.3.7 (2023-01-24)
 
     * Supported custom background and shadow (#27)
