@@ -76,10 +76,10 @@ GLightbox is a pure javascript lightbox library with mobile support.
     Check more options information on [GLightbox Docs](https://github.com/biati-digital/glightbox#lightbox-options).
 
 5. For more flexibility:
-      1. [Disable by image](https://blueswen.github.io/mkdocs-glightbox/flexibility/disable-by-image.md): Disable the lightbox for specific images. Suitable for a few amount of images that don't need the lightbox effect.
-      2. [Disable by page](https://blueswen.github.io/mkdocs-glightbox/flexibility/disable-by-page.md): Disable the lightbox for specific pages. Suitable for a few amount of pages that don't need the lightbox effect.
-      3. [Enable by image](https://blueswen.github.io/mkdocs-glightbox/flexibility/disable-by-page-enable-by-image.md): Disable the lightbox for specific pages but enable some images on those pages. Suitable for a few amount of images that need the lightbox effect.
-      4. [Disable globally but enable by image or page](https://blueswen.github.io/mkdocs-glightbox/flexibility/enable-by-image-or-page.md): Disable the lightbox globally but enable specific images or specific pages. Suitable for a large number of images or pages that don't need the lightbox effect.
+      1. [Disable by image](https://blueswen.github.io/mkdocs-glightbox/flexibility/disable-by-image/): Disable the lightbox for specific images. Suitable for a few amount of images that don't need the lightbox effect.
+      2. [Disable by page](https://blueswen.github.io/mkdocs-glightbox/flexibility/disable-by-page/): Disable the lightbox for specific pages. Suitable for a few amount of pages that don't need the lightbox effect.
+      3. [Enable by image](https://blueswen.github.io/mkdocs-glightbox/flexibility/disable-by-page-enable-by-image/): Disable the lightbox for specific pages but enable some images on those pages. Suitable for a few amount of images that need the lightbox effect.
+      4. [Disable globally but enable by image or page](https://blueswen.github.io/mkdocs-glightbox/flexibility/enable-by-image-or-page/): Disable the lightbox globally but enable specific images or specific pages. Suitable for a large number of images or pages that don't need the lightbox effect.
 6. Support lightbox image caption, check more details on [Caption](https://blueswen.github.io/mkdocs-glightbox/caption/caption/).
 7. Support grouping images as galleries, check more details on [Gallery](https://blueswen.github.io/mkdocs-glightbox/gallery/gallery/).
 
