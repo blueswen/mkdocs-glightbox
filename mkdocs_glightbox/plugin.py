@@ -122,9 +122,9 @@ class LightboxPlugin(BasePlugin):
 
         return output
 
-    def on_page_markdown(self, markdown, *args, **kwargs):
+    def on_page_markdown(self, markdown, page, config, files, **kwargs):
         """Support the #only-dark feature by setting the data-gallery property"""
-        if not self.config["auto_themed"]:
+        if not self.config["auto_themed"] or not page.meta.get("glightbox.auto_themed", True):
             return markdown
 
         def repl_md(match):
