@@ -144,7 +144,7 @@ class LightboxPlugin(BasePlugin):
             return html
 
         markdown = re.sub("!\\[[^\\]]*\\]\\([^)]*\\)", repl_md, markdown)
-        markdown = re.sub("<img.*>", repl_html, markdown)
+        markdown = re.sub("<img\\s+[^>]*>", repl_html, markdown)
 
         return markdown
 
