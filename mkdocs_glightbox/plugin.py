@@ -27,6 +27,7 @@ class LightboxPlugin(BasePlugin):
         ("zoomable", config_options.Type(bool, default=True)),
         ("draggable", config_options.Type(bool, default=True)),
         ("skip_classes", config_options.Type(list, default=[])),
+        ("auto_themed", config_options.Type(bool, default=False)),
         ("auto_caption", config_options.Type(bool, default=False)),
         (
             "caption_position",
@@ -120,6 +121,32 @@ class LightboxPlugin(BasePlugin):
         )
 
         return output
+
+    def on_page_markdown(self, markdown, page, config, files, **kwargs):
+        """Support the #only-dark feature by setting the data-gallery property"""
+        if not self.config["auto_themed"] or not page.meta.get("glightbox.auto_themed", True):
+            return markdown
+
+        def repl_md(match):
+            md = match.group()
+            if "#only-light" in md or "#gh-light-mode-only" in md:
+                return md + "{data-gallery='light'}"
+            elif "#only-dark" in md or "#gh-dark-mode-only" in md:
+                return md + "{data-gallery='dark'}"
+            return md
+
+        def repl_html(match):
+            html = match.group()
+            if "#only-light" in html or "#gh-light-mode-only" in html:
+                return f'{html[:4]} data-gallery="light" {html[4:]}'
+            elif "#only-dark" in html or "#gh-dark-mode-only" in html:
+                return f'{html[:4]} data-gallery="dark" {html[4:]}'
+            return html
+
+        markdown = re.sub("!\\[[^\\]]*\\]\\([^)]*\\)", repl_md, markdown)
+        markdown = re.sub("<img\\s+[^>]*>", repl_html, markdown)
+
+        return markdown
 
     def on_page_content(self, html, page, config, **kwargs):
         """Wrap img tag with anchor tag with glightbox class and attributes from config"""
