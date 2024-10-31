@@ -49,6 +49,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
            draggable: true
            skip_classes:
              - custom-skip-class-name
+           auto_themed: false
            auto_caption: false
            caption_position: bottom
            background: white
@@ -67,6 +68,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
     | zoomable | true | Enable or disable zoomable images. |
     | draggable | true | Enable or disable mouse drag to go prev and next slide. |
     | skip_classes | [ ] | Disable lightbox of those image with specific custom class name. |
+    | auto_themed | false | Enable or disable supporting light and dark mode of mkdocs material. |
     | auto_caption | false | Enable or disable using alt of image as caption title automatically. |
     | caption_position | bottom | Default captions position. (bottom, top, left, right) |
     | background | white | The background CSS of lightbox image. The background will shown when the image is transparent. You can use any CSS value for the background for example `#74b9ff` or `Gainsboro` or `none` for nothing. |
