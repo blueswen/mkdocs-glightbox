@@ -70,7 +70,7 @@ There are two galleries: taipei and seattle.
 
 ## Dark and light mode
 
-If you are using the mkdocs theme is material, then we provide an option `auto_themed` to enable the dark and light mode of the material theme. When enabled, the image with the same theme will be grouped as a galley in the light box.
+If you are using the mkdocs theme is material, then we provide an option `auto_themed` to support the dark and light mode of the material theme. When enabled, the image with the same theme will be grouped as a galley in the light box. This is done by automatically adding attribute `data-gallery` to images with the same theme.
 
 Enabled in a similar way to option [`auto_caption`](../caption/caption.md#image-alt-as-the-caption).
 
