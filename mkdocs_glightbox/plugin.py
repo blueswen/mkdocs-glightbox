@@ -127,24 +127,8 @@ class LightboxPlugin(BasePlugin):
         if not self.config["auto_themed"] or not page.meta.get("glightbox.auto_themed", True):
             return markdown
 
-        def repl_md(match):
-            md = match.group()
-            if "#only-light" in md or "#gh-light-mode-only" in md:
-                return md + "{data-gallery='light'}"
-            elif "#only-dark" in md or "#gh-dark-mode-only" in md:
-                return md + "{data-gallery='dark'}"
-            return md
-
-        def repl_html(match):
-            html = match.group()
-            if "#only-light" in html or "#gh-light-mode-only" in html:
-                return f'{html[:4]} data-gallery="light" {html[4:]}'
-            elif "#only-dark" in html or "#gh-dark-mode-only" in html:
-                return f'{html[:4]} data-gallery="dark" {html[4:]}'
-            return html
-
-        markdown = re.sub("!\\[[^\\]]*\\]\\([^)]*\\)", repl_md, markdown)
-        markdown = re.sub("<img\\s+[^>]*>", repl_html, markdown)
+        markdown = re.sub("!\\[[^\\]]*\\]\\([^)]*\\)", self.repl_md, markdown)
+        markdown = re.sub("<img\\s+[^>]*>", self.repl_html, markdown)
 
         return markdown
 
@@ -170,6 +154,26 @@ class LightboxPlugin(BasePlugin):
             html,
         )
 
+        return html
+
+    @staticmethod
+    def repl_md(match):
+        """Add attribute data-gallery to the img tag (type: md)"""
+        md = match.group()
+        if "#only-light" in md or "#gh-light-mode-only" in md:
+            return md + "{data-gallery='light'}"
+        elif "#only-dark" in md or "#gh-dark-mode-only" in md:
+            return md + "{data-gallery='dark'}"
+        return md
+
+    @staticmethod
+    def repl_html(match):
+        """Add attribute data-gallery to the img tag (type: html)"""
+        html = match.group()
+        if "#only-light" in html or "#gh-light-mode-only" in html:
+            return f'{html[:4]} data-gallery="light" {html[4:]}'
+        elif "#only-dark" in html or "#gh-dark-mode-only" in html:
+            return f'{html[:4]} data-gallery="dark" {html[4:]}'
         return html
 
     def wrap_img_with_anchor(self, match, plugin_config, skip_class, meta):
