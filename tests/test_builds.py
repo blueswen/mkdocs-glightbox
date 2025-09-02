@@ -10,6 +10,7 @@ from click.testing import CliRunner
 
 # MkDocs
 from mkdocs.__main__ import build_command
+from selectolax.lexbor import LexborHTMLParser
 
 # ##################################
 # ######## Globals #################
@@ -116,37 +117,79 @@ def validate_mkdocs_file(
     return testproject_path
 
 
-def validate_static(html_content: str, path: str = "", exist: bool = True):
+def validate_static(tree: any, path: str = "", exist: bool = True):
     """
     Validate glightbox.min.css and glightbox.min.js have been loaded or not
     """
+    head_content = tree.css_first("head").html
     assert exist == (
         re.search(
-            rf'<link href="{re.escape(path)}assets\/stylesheets\/glightbox\.min\.css" rel="stylesheet"\/>',
-            html_content,
+            rf'<link href="{re.escape(path)}assets\/stylesheets\/glightbox\.min\.css" rel="stylesheet">',
+            head_content,
         )
         is not None
     )
     assert exist == (
         re.search(
             rf'<script src="{re.escape(path)}assets\/javascripts\/glightbox\.min\.js"><\/script>',
-            html_content,
+            head_content,
         )
         is not None
     )
 
 
-def validate_script(html_content: str, exist: bool = True):
+def validate_script(tree: any, exist: bool = True):
     """
     Validate GLightbox have been initialized or not
     """
+    body_content = tree.css_first("body").html
     assert exist == (
         re.search(
             r"const lightbox = GLightbox\((.*)\);",
-            html_content,
+            body_content,
         )
         is not None
     )
+
+
+def get_init_script(soup):
+    script = soup.find("script", id="init-glightbox")
+    assert script, "init-glightbox <script> not found"
+    return script
+
+
+def assert_lightbox_wrap(img_selector, soup, href=None, **data_attrs):
+    img = soup.select_one(img_selector)
+    assert img, f"Could not find image matching {img_selector}"
+    a = img.parent
+    assert a.name == "a"
+    assert "glightbox" in a.get("class", [])
+    if href is not None:
+        assert a["href"] == href
+    for key, val in data_attrs.items():
+        attr = f"{key}"
+        assert a.get(attr) == val, f"{attr} != {val}"
+
+
+def validate_lightbox_wrap(img, href=None, **data_attrs):
+    a = img.parent
+    assert a.tag == "a"
+    assert "glightbox" in a.attrs.get("class", [])
+    if href is not None:
+        assert a.attrs.get("href") == href
+    else:
+        assert a.attrs.get("href") == img.attrs.get("src")
+    for key, val in data_attrs.items():
+        attr = f"{key}"
+        assert a.attrs.get(attr) == val, f"{attr} != {val}"
+
+
+def validate_lightbox_wrap_disable(img):
+    parent = img.parent
+    if parent.tag == "a":
+        assert "glightbox" not in parent.attrs.get("class", [])
+    else:
+        assert parent.tag == "p"
 
 
 EMOJI_LIST = ["emojione", "gemoji", "twemoji"]
@@ -163,13 +206,11 @@ def test_basic(tmp_path):
     mkdocs_file = "mkdocs.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
-    assert re.search(
-        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
+    validate_lightbox_wrap(tree.css_first("img[alt='img-tag']"))
 
 
 def test_material(tmp_path):
@@ -179,17 +220,12 @@ def test_material(tmp_path):
     mkdocs_file = "mkdocs-material.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
-    assert re.search(
-        r"document\$\.subscribe\(\(\) => { lightbox.reload\(\) }\);",
-        contents,
-    )
-    assert re.search(
-        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
+    script = tree.css_first("script#init-glightbox")
+    assert "document$.subscribe(()=>{ lightbox.reload(); });" in script.text()
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
 def test_material_instant(tmp_path):
@@ -199,17 +235,12 @@ def test_material_instant(tmp_path):
     mkdocs_file = "mkdocs-material-instant.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
-    assert re.search(
-        r"document\$\.subscribe\(\(\) => { lightbox.reload\(\) }\);",
-        contents,
-    )
-    assert re.search(
-        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
+    script = tree.css_first("script#init-glightbox")
+    assert "document$.subscribe(()=>{ lightbox.reload(); });" in script.text()
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
 def test_use_directory_urls(tmp_path):
@@ -221,14 +252,10 @@ def test_use_directory_urls(tmp_path):
     mkdocs_file = "mkdocs-target-file.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/sub_dir/page_in_sub_dir.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path=path)
-    validate_script(contents)
-    assert re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?>\s*<img.*?src="\.\.\/img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
 def test_disable_by_page(tmp_path):
@@ -238,16 +265,11 @@ def test_disable_by_page(tmp_path):
     mkdocs_file = "mkdocs.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/disable_by_page/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents, exist=False)
-    validate_script(contents, exist=False)
-    assert (
-        re.search(
-            r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
-            contents,
-        )
-        is None
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, exist=False)
+    validate_script(tree, exist=False)
+    for img in tree.css("img[alt='image']"):
+        validate_lightbox_wrap_disable(img)
 
 
 def test_disable_by_image(tmp_path):
@@ -257,22 +279,11 @@ def test_disable_by_image(tmp_path):
     mkdocs_file = "mkdocs-disable-by-image.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/disable_by_image/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path=path)
-    validate_script(contents)
-    assert re.search(
-        rf'<p><img.*?class="off-glb".*?src="{re.escape(path)}img\.png".*?\/><\/p>',
-        contents,
-    )
-    assert re.search(
-        rf'<p><img.*?class="skip-lightbox".*?src="{re.escape(path)}img\.png".*?\/><\/p>',
-        contents,
-    )
-    assert re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css("img.off-glb,img.skip-lightbox"):
+        validate_lightbox_wrap_disable(img)
 
 
 @pytest.mark.parametrize("emoji_name", EMOJI_LIST)
@@ -284,13 +295,11 @@ def test_disable_with_emoji(emoji_name, tmp_path):
     mkdocs_file = f"mkdocs-material-{emoji_name}.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/emoji/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents, path="../")
-    validate_script(contents)
-    assert re.search(
-        rf'<p><img.*?class="{re.escape(emoji_name)}".*?\/>.*?<\/p>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css(f"img.{emoji_name}"):
+        validate_lightbox_wrap_disable(img)
 
 
 def test_url(tmp_path):
@@ -300,14 +309,10 @@ def test_url(tmp_path):
     mkdocs_file = "mkdocs.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/url/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents, path="../")
-    validate_script(contents)
-    image_url = re.escape("https://dummyimage.com/600x400/bdc3c7/fff.png")
-    assert re.search(
-        rf'<a class="glightbox".*?href="{image_url}".*?><img.*?src="{image_url}".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
 def test_default_options(tmp_path):
@@ -317,22 +322,16 @@ def test_default_options(tmp_path):
     mkdocs_file = "mkdocs.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/images/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path)
-    validate_script(contents)
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png.*?"><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css("img[alt^='image-']"):
+        validate_lightbox_wrap(img)
 
-    # validate position
-    regex_obj = re.search(
-        r"const lightbox = GLightbox\((.*)\);",
-        contents,
-    )
-    assert regex_obj
-    text = regex_obj.group(1)
+    javascript = tree.css_first("script#init-glightbox")
+    assert javascript is not None
+    javascript_text = javascript.text()
+    assert "const lightbox = GLightbox(" in javascript_text
     options = [
         '"touchNavigation": true',
         '"loop": false',
@@ -343,7 +342,7 @@ def test_default_options(tmp_path):
         '"slideEffect": "slide"',
     ]
     for option in options:
-        assert option in text
+        assert option in javascript_text
 
 
 def test_options(tmp_path):
@@ -353,38 +352,27 @@ def test_options(tmp_path):
     mkdocs_file = "mkdocs-options.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/images/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path)
-    validate_script(contents)
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
     # validate override style
-    assert ".gslide-image img { background: none; }" in contents
+    style = tree.css_first("style#glightbox-style")
+    assert style is not None
+    assert ".gslide-image img { background: none; }" in style.text()
     assert (
-        """.glightbox-clean .gslide-media {
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }"""
-        in contents
+        ".glightbox-clean .gslide-media { -webkit-box-shadow: none; box-shadow: none; }"
+        in style.text()
     )
-    # validate slide options
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='image-a']"),
+        **{"data-desc-position": "right", "data-width": "80%", "data-height": "60%"},
     )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-height="60%"' in text
-    assert 'data-width="80%"' in text
-    assert 'data-desc-position="right"' in text
 
-    # validate GLightbox options
-    regex_obj = re.search(
-        r"const lightbox = GLightbox\((.*)\);",
-        contents,
-    )
-    assert regex_obj
-    text = regex_obj.group(1)
-    options = [
+    # validate GLightbox init options
+    javascript = tree.css_first("script#init-glightbox")
+    assert javascript is not None
+    javascript_text = javascript.text()
+    for option in [
         '"touchNavigation": false',
         '"loop": true',
         '"zoomable": false',
@@ -392,9 +380,8 @@ def test_options(tmp_path):
         '"openEffect": "fade"',
         '"closeEffect": "fade"',
         '"slideEffect": "fade"',
-    ]
-    for option in options:
-        assert option in text
+    ]:
+        assert option in javascript_text
 
 
 def test_gallery(tmp_path):
@@ -404,41 +391,13 @@ def test_gallery(tmp_path):
     mkdocs_file = "mkdocs-material.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/gallery/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path=path)
-    validate_script(contents)
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-a".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
-    )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-gallery="1"' in text
-
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-b".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
-    )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-gallery="1"' in text
-
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}another-img\.png"(.*?)><img alt="image-c".*?src="{re.escape(path)}another-img\.png".*?\/><\/a>',
-        contents,
-    )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-gallery="2"' in text
-
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}another-img\.png"(.*?)><img alt="image-d".*?src="{re.escape(path)}another-img\.png".*?\/><\/a>',
-        contents,
-    )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-gallery="2"' in text
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css("img[alt='image-a'],img[alt='image-b']"):
+        validate_lightbox_wrap(img, **{"data-gallery": "1"})
+    for img in tree.css("img[alt='image-c'],img[alt='image-d']"):
+        validate_lightbox_wrap(img, **{"data-gallery": "2"})
 
 
 def test_caption(tmp_path):
@@ -448,39 +407,25 @@ def test_caption(tmp_path):
     mkdocs_file = "mkdocs-material.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/caption/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path=path)
-    validate_script(contents)
-
-    # validate title and description
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-default".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='image-default']"),
+        **{"data-description": "data-description", "data-title": "data-title"},
     )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-description="data-description"' in text
-    assert 'data-title="data-title"' in text
-
-    # validate position
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-right".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='image-right']"),
+        **{
+            "data-desc-position": "right",
+            "data-description": "data-description",
+            "data-title": "data-title",
+        },
     )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-desc-position="right"' in text
-
-    # validate compatible with figure
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img alt="image-figure".*?src="{re.escape(path)}img\.png".*?\/><\/a><\/p>',
-        contents,
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='image-figure']"),
+        **{"data-description": "data-description", "data-title": "data-title"},
     )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-description="data-description"' in text
-    assert 'data-title="data-title"' in text
 
 
 def test_auto_caption_by_page(tmp_path):
@@ -490,18 +435,13 @@ def test_auto_caption_by_page(tmp_path):
     mkdocs_file = "mkdocs-material.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/auto_caption/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path=path)
-    validate_script(contents)
-    # validate title and description
-    regex_obj = re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png"(.*?)><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='alt as caption']"),
+        **{"data-title": "alt as caption"},
     )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-title="alt as caption"' in text
 
 
 def test_auto_caption(tmp_path):
@@ -511,16 +451,12 @@ def test_auto_caption(tmp_path):
     mkdocs_file = "mkdocs-auto-caption.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
-    regex_obj = re.search(
-        r'<a class="glightbox".*?href="img\.png"(.*?)><img.*?src="img\.png".*?\/><\/a>',
-        contents,
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='image']"), **{"data-title": "image"}
     )
-    assert regex_obj
-    text = regex_obj.group(1)
-    assert 'data-title="image"' in text
 
 
 def test_material_template(tmp_path):
@@ -534,17 +470,12 @@ def test_material_template(tmp_path):
         docs_path="tests/fixtures/template_docs",
     )
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
-    assert re.search(
-        r"document\$\.subscribe\(\(\) => { lightbox.reload\(\) }\);",
-        contents,
-    )
-    assert re.search(
-        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
+    script = tree.css_first("script#init-glightbox")
+    assert "document$.subscribe(()=>{ lightbox.reload(); });" in script.text()
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
 def test_site_url(tmp_path):
@@ -554,23 +485,17 @@ def test_site_url(tmp_path):
     mkdocs_file = "mkdocs-site-url.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
-    assert re.search(
-        r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
     file = testproject_path / "site/images/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path)
-    validate_script(contents)
-    assert re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css("img[alt^='image-']"):
+        validate_lightbox_wrap(img)
 
 
 def test_static(tmp_path):
@@ -594,17 +519,10 @@ def test_image_in_anchor(tmp_path):
     mkdocs_file = "mkdocs.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/image_in_anchor/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path)
-    validate_script(contents)
-    assert (
-        re.search(
-            rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-            contents,
-        )
-        is None
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap_disable(tree.css_first("img[alt='image-in-anchor']"))
 
 
 def test_image_without_ext(tmp_path):
@@ -614,14 +532,10 @@ def test_image_without_ext(tmp_path):
     mkdocs_file = "mkdocs.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/without_ext/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path)
-    validate_script(contents)
-    assert re.search(
-        r'<a class="glightbox".*?href="https://picsum\.photos/1200/800".*?data-type="image".*?><img.*?src="https://picsum\.photos/1200/800".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(tree.css_first("img[alt='Image without extension']"))
 
 
 def test_error(tmp_path):
@@ -635,9 +549,9 @@ def test_error(tmp_path):
         docs_path="tests/fixtures/error_docs",
     )
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
 
 
 def test_privacy(tmp_path):
@@ -647,20 +561,16 @@ def test_privacy(tmp_path):
     mkdocs_file = "mkdocs-material-privacy.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/url/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents, path="../")
-    validate_script(contents)
-    image_url = re.escape("../assets/external/dummyimage.com/600x400/bdc3c7/fff.png")
-    assert re.search(
-        rf'<a class="glightbox"(?!.*href=).*?><img.*?src="{image_url}".*?><\/a>',
-        contents,
-    )
-    patch_script = re.escape(
-        "document.querySelectorAll('.glightbox').forEach(function(element) {"
-    )
-    assert re.search(
-        rf"{patch_script}",
-        contents,
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    a = tree.css_first("img[alt='image']").parent
+    assert a.tag == "a"
+    assert "glightbox" in a.attrs.get("class", [])
+    script = tree.css_first("script#init-glightbox")
+    assert (
+        "document.querySelectorAll('.glightbox').forEach(function(element)"
+        in script.text()
     )
 
 
@@ -671,18 +581,11 @@ def test_enable_by_image(tmp_path):
     mkdocs_file = "mkdocs-material.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/enable_by_image/index.html"
-    contents = file.read_text(encoding="utf8")
-    path = "../"
-    validate_static(contents, path=path)
-    validate_script(contents)
-    assert re.search(
-        rf'<p><img alt="image" src="{re.escape(path)}img\.png" \/><\/p>',
-        contents,
-    )
-    assert re.search(
-        rf'<a class="glightbox".*?href="{re.escape(path)}img\.png".*?><img.*?class="on-glb".*?src="{re.escape(path)}img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(tree.css_first("img[alt='image-enable']"))
+    validate_lightbox_wrap_disable(tree.css_first("img[alt='image-disable']"))
 
 
 def test_manual(tmp_path):
@@ -692,44 +595,56 @@ def test_manual(tmp_path):
     mkdocs_file = "mkdocs-manual.yml"
     testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
     file = testproject_path / "site/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents)
-    validate_script(contents)
-    assert (
-        re.search(
-            r'<a class="glightbox".*?href="img\.png".*?>\s*<img.*?src="img\.png".*?\/><\/a>',
-            contents,
-        )
-        is None
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree)
+    validate_script(tree)
+    validate_lightbox_wrap_disable(tree.css_first("img[alt='image']"))
 
     file = testproject_path / "site/manual/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents, path="../")
-    validate_script(contents)
-    assert re.search(
-        r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?src="..\/img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
     file = testproject_path / "site/manual_enable_by_page/index.html"
-    contents = file.read_text(encoding="utf8")
-    validate_static(contents, path="../")
-    validate_script(contents)
-    assert re.search(
-        r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?alt="image-a" src="..\/img\.png".*?\/><\/a>',
-        contents,
-    )
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css("img[alt='image-a'],img[alt='image-c']"):
+        validate_lightbox_wrap(img)
+    validate_lightbox_wrap_disable(tree.css_first("img[alt='image-b']"))
 
-    assert (
-        re.search(
-            r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?alt="image-b" src="..\/img\.png".*?\/><\/a>',
-            contents,
-        )
-        is None
-    )
 
-    assert re.search(
-        r'<a class="glightbox".*?href="..\/img\.png".*?>\s*<img.*?alt="image-c" src="..\/img\.png".*?\/><\/a>',
-        contents,
+def test_auto_theme(tmp_path):
+    """
+    Validate auto theme feature
+    """
+    mkdocs_file = "mkdocs-material-theme.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/theme/index.html"
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    light_img_nodes = tree.css("img[alt='light']")
+    assert len(light_img_nodes) > 0
+    for light_img_node in light_img_nodes:
+        validate_lightbox_wrap(light_img_node)
+        assert light_img_node.parent.attrs.get("data-gallery") == "light"
+    dark_img_nodes = tree.css("img[alt='dark']")
+    assert len(dark_img_nodes) > 0
+    for dark_img_node in dark_img_nodes:
+        validate_lightbox_wrap(dark_img_node)
+        assert dark_img_node.parent.attrs.get("data-gallery") == "dark"
+
+
+@pytest.mark.timeout(5)  # prevent hanging indefinitely
+def test_edge_cases(tmp_path):
+    """
+    Validate edge cases
+    """
+    mkdocs_file = "mkdocs-edge-cases.yml"
+    validate_mkdocs_file(
+        tmp_path,
+        f"tests/fixtures/{mkdocs_file}",
+        docs_path="tests/fixtures/edge_cases_docs",
     )

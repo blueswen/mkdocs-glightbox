@@ -2,6 +2,6 @@
 glightbox-manual: true
 ---
 
-![image](img.png){.on-glb}
+![image-enable](img.png){.on-glb}
 
-![image](img.png)
+![image-disable](img.png)

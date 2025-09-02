@@ -1,3 +1,3 @@
 # Page in sub dir
 
-![img](../img.png)
+![image](../img.png)
