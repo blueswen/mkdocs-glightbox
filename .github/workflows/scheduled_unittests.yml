@@ -1,4 +1,4 @@
-name: Scheduled unit tests
+name: Scheduled Unit Tests
 # Controls when the action will run.
 # Every week "At 07:17 on Sunday."
 # See https://crontab.guru/#17_7_*_*_7
@@ -15,24 +15,18 @@ jobs:
     name: Run unit tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+      - uses: actions/checkout@master
 
-    - name: Setup Python
-      uses: actions/setup-python@master
-      with:
-        python-version: 3.9
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-    - name: Install dependencies
-      run: |
-        pip3 install --upgrade pip
-        pip3 install --upgrade setuptools
-        pip3 install --upgrade wheel
-        pip3 install -r tests/test_requirements.txt
-        pip3 install .
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
 
-    - name: Run unit tests
-      run: |
-        git config --global user.name "Github Action"
-        git config --global user.email "githubaction@gmail.com"
-        pytest
-  
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Run tests
+        run: uv run pytest tests -m "not e2e"
