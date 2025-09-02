@@ -1,11 +1,11 @@
 import json
 import logging
 import os
-import re
 
 from mkdocs import utils
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
+from selectolax.lexbor import LexborHTMLParser, create_tag
 
 log = logging.getLogger(__name__)
 base_path = os.path.dirname(os.path.abspath(__file__))
@@ -52,49 +52,56 @@ class LightboxPlugin(BasePlugin):
         if "glightbox" in page.meta and page.meta.get("glightbox", True) is False:
             return output
 
-        # Define regular expressions for matching the relevant sections of the HTML code
-        head_regex = re.compile(r"<head>(.*?)<\/head>", flags=re.DOTALL)
-        body_regex = re.compile(r"<body(.*?)<\/body>", flags=re.DOTALL)
+        tree = LexborHTMLParser(output)
+        head_node = tree.css_first("head")
+        body_node = tree.css_first("body")
 
-        # Modify the CSS link
-        css_link = f'<link href="{utils.get_relative_url(utils.normalize_url("assets/stylesheets/glightbox.min.css"), page.url)}" rel="stylesheet"/>'
-        output = head_regex.sub(f"<head>\\1 {css_link}</head>", output)
+        glightbox_css_node = create_tag("link")
+        glightbox_css_node.attrs["href"] = utils.get_relative_url(
+            utils.normalize_url("assets/stylesheets/glightbox.min.css"), page.url
+        )
+        glightbox_css_node.attrs["rel"] = "stylesheet"
 
-        # Modify the CSS patch
-        css_patch = """
-    html.glightbox-open { overflow: initial; height: 100%; }
-    .gslide-title { margin-top: 0px; user-select: text; }
-    .gslide-desc { color: #666; user-select: text; }"""
-        css_patch += f"""
-    .gslide-image img {{ background: {self.config['background']}; }}"""
+        glightbox_js_node = create_tag("script")
+        glightbox_js_node.attrs["src"] = utils.get_relative_url(
+            utils.normalize_url("assets/javascripts/glightbox.min.js"), page.url
+        )
+        head_node.insert_child(glightbox_css_node)
+        head_node.insert_child(glightbox_js_node)
+
+        css_text = (
+            """
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: """
+            + self.config["background"]
+            + """; }"""
+        )
         if not self.config["shadow"]:
-            css_patch += """
-    .glightbox-clean .gslide-media {
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }"""
+            css_text += """
+            .glightbox-clean .gslide-media { -webkit-box-shadow: none; box-shadow: none; }"""
         if config["theme"].name == "material":
-            css_patch += """
-    .gscrollbar-fixer { padding-right: 15px; }
-    .gdesc-inner { font-size: 0.75rem; }
-    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
-    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
-    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}"""
-        output = head_regex.sub(f"<head>\\1<style>{css_patch}</style></head>", output)
+            css_text += """
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }"""
 
-        # Modify the JS script
-        js_script = f'<script src="{utils.get_relative_url(utils.normalize_url("assets/javascripts/glightbox.min.js"), page.url)}"></script>'
-        output = head_regex.sub(f"<head>\\1 {js_script}</head>", output)
+        patch_css_node = create_tag("style")
+        patch_css_node.attrs["id"] = "glightbox-style"
+        patch_css_node.insert_child(css_text + "\n        ")
+        head_node.insert_child(patch_css_node)
 
-        # Modify the JS code
         plugin_config = dict(self.config)
-        lb_config = {
+        lb = {
             k: plugin_config[k]
             for k in ["touchNavigation", "loop", "zoomable", "draggable"]
         }
-        lb_config["openEffect"] = plugin_config.get("effect", "zoom")
-        lb_config["closeEffect"] = plugin_config.get("effect", "zoom")
-        lb_config["slideEffect"] = plugin_config.get("slide_effect", "slide")
+        lb["openEffect"] = plugin_config.get("effect", "zoom")
+        lb["closeEffect"] = plugin_config.get("effect", "zoom")
+        lb["slideEffect"] = plugin_config.get("slide_effect", "slide")
         js_code = ""
         if self.using_material_privacy:
             js_code += """document.querySelectorAll('.glightbox').forEach(function(element) {
@@ -110,149 +117,127 @@ class LightboxPlugin(BasePlugin):
     }
 });
 """
-        js_code += f"const lightbox = GLightbox({json.dumps(lb_config)});\n"
+        js_code += "const lightbox = GLightbox(" + json.dumps(lb) + ");\n"
         if self.using_material or "navigation.instant" in config["theme"].get(
             "features", []
         ):
-            # support compatible with mkdocs-material Instant loading feature
-            js_code += "document$.subscribe(() => { lightbox.reload() });\n"
-        output = body_regex.sub(
-            f'<body\\1<script id="init-glightbox">{js_code}</script></body>', output
-        )
+            js_code += "document$.subscribe(()=>{ lightbox.reload(); });\n"
 
-        return output
+        init_js_node = create_tag("script")
+        init_js_node.attrs["id"] = "init-glightbox"
+        init_js_node.insert_child(js_code)
+        body_node.insert_child(init_js_node)
 
-    def on_page_markdown(self, markdown, page, config, files, **kwargs):
-        """Support the #only-dark feature by setting the data-gallery property"""
-        if not self.config["auto_themed"] or not page.meta.get("glightbox.auto_themed", True):
-            return markdown
-
-        markdown = re.sub("!\\[[^\\]]*\\]\\([^)]*\\)", self.repl_md, markdown)
-        markdown = re.sub("<img\\s+[^>]*>", self.repl_html, markdown)
-
-        return markdown
+        return tree.html
 
     def on_page_content(self, html, page, config, **kwargs):
         """Wrap img tag with anchor tag with glightbox class and attributes from config"""
         # skip page with meta glightbox is false
         if "glightbox" in page.meta and page.meta.get("glightbox", True) is False:
             return html
-        plugin_config = {k: dict(self.config)[k] for k in ["width", "height"]}
-        # skip emoji img with index as class name from pymdownx.emoji https://facelessuser.github.io/pymdown-extensions/extensions/emoji/
-        skip_class = ["emojione", "twemoji", "gemoji"]
-        # skip image with off-glb and specific class
-        skip_class += ["off-glb"] + self.config["skip_classes"]
 
-        # Use regex to find image tags that need to be wrapped with anchor tags and image tags already wrapped with anchor tags
-        pattern = re.compile(
-            r"<a\b[^>]*>(?:\s*<[^>]+>\s*)*<img\b[^>]*>(?:\s*<[^>]+>\s*)*</a>|<img(?P<attr>.*?)>"
-        )
-        html = pattern.sub(
-            lambda match: self.wrap_img_with_anchor(
-                match, plugin_config, skip_class, page.meta
-            ),
-            html,
+        skip_classes = ["emojione", "twemoji", "gemoji", "off-glb"] + self.config[
+            "skip_classes"
+        ]
+        return self.wrap_img_with_anchor_selectolax(
+            html, plugin_config=self.config, meta=page.meta, skip_classes=skip_classes
         )
 
-        return html
+    def wrap_img_with_anchor_selectolax(
+        self, html: str, plugin_config, meta, skip_classes
+    ):
+        tree = LexborHTMLParser(html)
 
-    @staticmethod
-    def repl_md(match):
-        """Add attribute data-gallery to the img tag (type: md)"""
-        md = match.group()
-        if "#only-light" in md or "#gh-light-mode-only" in md:
-            return md + "{data-gallery='light'}"
-        elif "#only-dark" in md or "#gh-dark-mode-only" in md:
-            return md + "{data-gallery='dark'}"
-        return md
+        for img in tree.css("img"):
+            if self._should_skip_img(img, skip_classes, plugin_config, meta):
+                continue
 
-    @staticmethod
-    def repl_html(match):
-        """Add attribute data-gallery to the img tag (type: html)"""
-        html = match.group()
-        if "#only-light" in html or "#gh-light-mode-only" in html:
-            return f'{html[:4]} data-gallery="light" {html[4:]}'
-        elif "#only-dark" in html or "#gh-dark-mode-only" in html:
-            return f'{html[:4]} data-gallery="dark" {html[4:]}'
-        return html
+            attrs = self._build_anchor_attrs(img, plugin_config, meta)
 
-    def wrap_img_with_anchor(self, match, plugin_config, skip_class, meta):
-        """Wrap image tags with anchor tags"""
-        try:
-            a_pattern = re.compile(r"<a(?P<attr>.*?)>")
-            if a_pattern.match(match.group(0)):
-                return match.group(0)
+            a_node = create_tag("a")
+            for key, value in attrs.items():
+                a_node.attrs[key] = str(value)
 
-            img_tag = match.group(0)
-            img_attr = match.group("attr")
-            classes = re.findall(r'class="([^"]+)"', img_attr)
-            classes = [c for match in classes for c in match.split()]
+            img_clone = img
+            a_node.insert_child(img_clone)
+            img.replace_with(a_node)
 
-            if self.config["manual"] and meta.get("glightbox", None) is True:
-                # with manual mode but enable glightbox in page meta
-                if set(skip_class) & set(classes):
-                    # skip image with off-glb and specific class
-                    return img_tag
-            elif meta.get("glightbox-manual", False) or self.config["manual"]:
-                # disable by page meta or global config
-                if "on-glb" not in classes:
-                    # skip image without on-glb class
-                    return img_tag
-            elif set(skip_class) & set(classes):
-                # skip image with off-glb and specific class
-                return img_tag
+        return tree.html
 
-            if self.using_material_privacy:
-                # skip href attribute if using material privacy plugin, will be set by js code
-                a_tag = '<a class="glightbox" data-type="image"'
-            else:
-                src = re.search(r"src=[\"\']([^\"\']+)", img_attr).group(1)
-                a_tag = f'<a class="glightbox" href="{src}" data-type="image"'
-            # setting data-width and data-height with plugin options
-            for k, v in plugin_config.items():
-                a_tag += f' data-{k}="{v}"'
-            slide_options = [
-                "title",
-                "description",
-                "caption-position",
-                "gallery",
-            ]
-            for option in slide_options:
-                attr = f"data-{option}"
-                if attr == "data-title":
-                    val = re.search(r"data-title=[\"]([^\"]+)", img_attr)
-                    if self.config["auto_caption"] or (
-                        "glightbox.auto_caption" in meta
-                        and meta.get("glightbox.auto_caption", False) is True
-                    ):
-                        if val:
-                            val = val.group(1)
-                        else:
-                            val = re.search(r"alt=[\"]([^\"]+)", img_attr)
-                            val = val.group(1) if val else ""
-                    else:
-                        val = val.group(1) if val else ""
-                elif attr == "data-caption-position":
-                    val = re.search(r"data-caption-position=[\"]([^\"]+)", img_attr)
-                    val = val.group(1) if val else self.config["caption_position"]
+    def _should_skip_img(self, img, skip_classes, plugin_config, meta):
+        """Skip by class, page meta, or plugin config"""
+        if img.parent and img.parent.tag == "a":
+            return True
+        classes = img.attributes.get("class", "").split()
+        if set(classes) & set(skip_classes):
+            return True
+        if plugin_config.get("manual") and meta.get("glightbox", None) is True:
+            return False
+        elif (
+            meta.get("glightbox-manual", False) or plugin_config.get("manual")
+        ) and "on-glb" not in classes:
+            return True
+
+    def _build_anchor_attrs(self, img, plugin_config, meta):
+        """Get attributes from img for the anchor tag"""
+        attrs = {
+            "class": "glightbox",
+            "data-type": "image",
+            "data-width": plugin_config.get("width", "auto"),
+            "data-height": plugin_config.get("height", "auto"),
+        }
+
+        if not self.using_material_privacy:
+            attrs["href"] = img.attributes.get("src", "")
+
+        auto_caption = self.config.get("auto_caption") or meta.get(
+            "glightbox.auto_caption", False
+        )
+
+        slide_options_map = {
+            "title": self._get_title_value,
+            "description": self._get_description_value,
+            "caption-position": self._get_caption_position_value,
+            "gallery": self._get_gallery_value,
+        }
+
+        for option, value_getter in slide_options_map.items():
+            attr = f"data-{option}"
+            val = value_getter(img, auto_caption)
+
+            if val:
+                if attr == "data-caption-position":
+                    attrs["data-desc-position"] = val
                 else:
-                    val = re.search(f'{attr}=["]([^"]+)', img_attr)
-                    val = val.group(1) if val else ""
+                    attrs[attr] = val
 
-                # skip val is empty
-                if val != "":
-                    # convert data-caption-position to data-desc-position
-                    if attr == "data-caption-position":
-                        a_tag += f' data-desc-position="{val}"'
-                    else:
-                        a_tag += f' {attr}="{val}"'
-            a_tag += f">{img_tag}</a>"
-            return a_tag
-        except Exception as e:
-            log.warning(
-                f"Error in wrapping img tag with anchor tag: {e} {match.group(0)}"
-            )
-            return match.group(0)
+        return attrs
+
+    def _get_title_value(self, img, auto_caption):
+        val = img.attributes.get("data-title", "")
+        if auto_caption and not val:
+            val = img.attributes.get("alt", "")
+        return val
+
+    def _get_description_value(self, img, auto_caption):
+        return img.attributes.get("data-description", "")
+
+    def _get_caption_position_value(self, img, auto_caption):
+        return img.attributes.get(
+            "data-caption-position", self.config["caption_position"]
+        )
+
+    def _get_gallery_value(self, img, auto_caption):
+        if self.config["auto_themed"]:
+            if "#only-light" in img.attributes.get(
+                "src", ""
+            ) or "#gh-light-mode-only" in img.attributes.get("src", ""):
+                return "light"
+            elif "#only-dark" in img.attributes.get(
+                "src", ""
+            ) or "#gh-dark-mode-only" in img.attributes.get("src", ""):
+                return "dark"
+        return img.attributes.get("data-gallery", "")
 
     def on_post_build(self, config, **kwargs):
         """Copy glightbox"s css and js files to assets directory"""
