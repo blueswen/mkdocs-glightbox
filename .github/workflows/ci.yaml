@@ -1,0 +1,42 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  run:
+    name: Lint, Type Check, Security Scan & Build Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install the project
+        run: uv sync --all-extras --dev --frozen
+
+      - name: Run Ruff (Code Formatting Check)
+        run: uv run ruff check .
+
+      - name: Run Bandit (Scan Python code for security issues)
+        run: uv run bandit -r mkdocs_glightbox
+      
+      - name: Run tests
+        run: uv run pytest tests -m "not e2e"
+
+      - name: Build the package
+        run: uv build
+
+      - name: Check package with Twine
+        run: uv run twine check dist/*
+
+      - name: Install package from local build
+        run: |
+          uv venv test-install
+          source test-install/bin/activate
+          uv pip install dist/*.whl mkdocs
+          uv run --active mkdocs build -f tests/fixtures/mkdocs.yml

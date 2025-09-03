@@ -40,7 +40,7 @@ theme:
 extra:
   analytics:
     provider: google
-    property: G-KQTG9N2Y4N
+    property: !ENV GOOGLE_ANALYTICS_KEY
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -60,6 +60,7 @@ plugins:
       draggable: true
       skip_classes:
         - skip-lightbox
+      auto_themed: true
 
 nav:
   - Home: index.md
@@ -73,3 +74,4 @@ nav:
     - Disable by page: flexibility/disable-by-page.md
     - Enable by image: flexibility/disable-by-page-enable-by-image.md
     - Disable globally but enable by image or page: flexibility/enable-by-image-or-page.md
+  - Auto Themed: auto-themed/auto-themed.md

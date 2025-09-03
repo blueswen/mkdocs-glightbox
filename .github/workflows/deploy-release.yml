@@ -1,0 +1,32 @@
+name: Deploy release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  pypi:
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mkdocs-glightbox
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install the project
+        run: uv sync --all-extras --dev --frozen
+
+      - name: Build the package
+        run: uv build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
