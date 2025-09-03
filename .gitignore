@@ -1,5 +1,6 @@
 .DS_Store
 .vscode/
+docs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -53,6 +54,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+.benchmarks/
 
 # Translations
 *.mo

@@ -1,3 +1,11 @@
+mkdocs-glightbox-0.5.0 (2025-09-03)
+
+    * Updated glightbox to 3.3.1
+    * Migrated to uv and pyproject.toml for development and building
+    * Replaced regex with Selectolax to improve performance, availability and maintainability (#44, #56, #61)
+    * Updated tests and workflow
+    * Support auto themed (#49)
+
 mkdocs-glightbox-0.4.0 (2023-05-06)
 
     * Supported manual mode (#29)
