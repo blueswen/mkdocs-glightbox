@@ -13,7 +13,7 @@ GLightbox is a pure javascript lightbox library with mobile support.
 ## Dependency
 
 1. GLightbox javascript file and css file
-    1. GLightbox==3.2.0
+    1. GLightbox==3.3.1
 
 ## Usage
 

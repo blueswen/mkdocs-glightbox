@@ -24,5 +24,7 @@ jobs:
         run: |
           echo "# Performance Test Results" >> $GITHUB_STEP_SUMMARY
           echo "```" >> $GITHUB_STEP_SUMMARY
-          uv run pytest tests -m perf --log-level=INFO | tee -a $GITHUB_STEP_SUMMARY
+          uv run pytest tests -m perf --log-level=INFO > result.log
+          cat result.log
+          cat result.log >> $GITHUB_STEP_SUMMARY
           echo "```" >> $GITHUB_STEP_SUMMARY
