@@ -1,6 +1,6 @@
 <figure markdown>
 
-![Jioufen, Taiwan](../images/andy-wang-jioufen.jpg) 
+![Jioufen, Taiwan](../images/andy-wang-jioufen.jpg)
 
 <figcaption markdown>Jioufen, Taiwan. Credit: [Andy Wang](https://unsplash.com/photos/eOcOTrceCmQ)</figcaption>
 </figure>
