@@ -1,3 +1,7 @@
+mkdocs-glightbox-0.5.1 (2025-09-04)
+
+    * Pined selectolax to 0.3.29 to avoid missing binary wheel issue on some platforms (#63)
+
 mkdocs-glightbox-0.5.0 (2025-09-03)
 
     * Updated glightbox to 3.3.1
