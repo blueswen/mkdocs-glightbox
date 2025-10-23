@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mkdocs-glightbox"
-version = "0.5.1"
+version = "0.5.2"
 description = "MkDocs plugin supports image lightbox with GLightbox."
 readme = "README.md"
 license = "MIT"
@@ -13,7 +13,7 @@ authors = [
   {name = "Blueswen", email = "blueswen.tw@gmail.com"}
 ]
 dependencies = [
-    "selectolax==0.3.29",
+    "selectolax>=0.3.29",
 ]
 keywords = [
     "mkdocs",
@@ -34,6 +34,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Documentation",
     "Topic :: Text Processing"

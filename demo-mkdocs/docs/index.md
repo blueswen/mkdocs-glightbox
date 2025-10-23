@@ -12,8 +12,10 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
 ## Dependency
 
-1. GLightbox javascript file and css file
-    1. GLightbox==3.3.1
+1. GLightbox javascript file and CSS file
+   1. GLightbox==3.3.1
+2. selectolax process HTML
+   1. selectolax>=0.3.29
 
 ## Usage
 
@@ -121,4 +123,4 @@ Click the image to try lightbox and enjoy the view of Taiwan.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Blueswen/mkdocs-glightbox/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/blueswen/mkdocs-glightbox/blob/main/LICENSE) file for details.

@@ -16,6 +16,8 @@ GLightbox is a pure javascript lightbox library with mobile support.
 
 1. GLightbox javascript file and CSS file
    1. GLightbox==3.3.1
+2. selectolax process HTML
+   1. selectolax>=0.3.29
 
 ## Usage
 
