@@ -1,3 +1,7 @@
+mkdocs-glightbox-0.5.2 (2025-10-23)
+
+    * Updated selectolax dependency to >=0.3.29 to support Python 3.14 (#64)
+
 mkdocs-glightbox-0.5.1 (2025-09-04)
 
     * Pined selectolax to 0.3.29 to avoid missing binary wheel issue on some platforms (#63)
