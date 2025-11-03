@@ -107,10 +107,15 @@ class LightboxPlugin(BasePlugin):
             js_code += """document.querySelectorAll('.glightbox').forEach(function(element) {
     try {
         var img = element.querySelector('img');
-        if (img && img.src) {
-            element.setAttribute('href', img.src);
+        if (img) {
+            const imageSrc = img.dataset.src || img.src;
+            if (imageSrc) {
+                element.setAttribute('href', imageSrc);
+            } else {
+                console.log('No img element with src or data-src attribute found');
+            }
         } else {
-            console.log('No img element with src attribute found');
+            console.log('No img element found');
         }
     } catch (error) {
         console.log('Error:', error);
@@ -188,7 +193,7 @@ class LightboxPlugin(BasePlugin):
         }
 
         if not self.using_material_privacy:
-            attrs["href"] = img.attributes.get("src", "")
+            attrs["href"] = img.attributes.get("data-src") or img.attributes.get("src", "")
 
         auto_caption = self.config.get("auto_caption") or meta.get(
             "glightbox.auto_caption", False
@@ -228,15 +233,14 @@ class LightboxPlugin(BasePlugin):
         )
 
     def _get_gallery_value(self, img, auto_caption):
+        src = img.attributes.get("data-src") or img.attributes.get("src", "")
+        
         if self.config["auto_themed"]:
-            if "#only-light" in img.attributes.get(
-                "src", ""
-            ) or "#gh-light-mode-only" in img.attributes.get("src", ""):
+            if "#only-light" in src or "#gh-light-mode-only" in src:
                 return "light"
-            elif "#only-dark" in img.attributes.get(
-                "src", ""
-            ) or "#gh-dark-mode-only" in img.attributes.get("src", ""):
+            elif "#only-dark" in src or "#gh-dark-mode-only" in src:
                 return "dark"
+        
         return img.attributes.get("data-gallery", "")
 
     def on_post_build(self, config, **kwargs):
