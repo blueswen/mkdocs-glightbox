@@ -114,18 +114,14 @@ class LightboxPlugin(BasePlugin):
         lb["slideEffect"] = plugin_config.get("slide_effect", "slide")
         js_code = ""
         if self.using_material_privacy:
-            js_code += """document.querySelectorAll('.glightbox').forEach(function(element) {
+            js_code += """
+document.querySelectorAll('.glightbox').forEach(function(element) {
     try {
         var img = element.querySelector('img');
-        if (img) {
-            const imageSrc = img.dataset.src || img.src;
-            if (imageSrc) {
-                element.setAttribute('href', imageSrc);
-            } else {
-                console.log('No img element with src or data-src attribute found');
-            }
+        if (img && img.src) {
+            element.setAttribute('href', img.src);
         } else {
-            console.log('No img element found');
+            console.log('No img element with src attribute found');
         }
     } catch (error) {
         console.log('Error:', error);
@@ -133,6 +129,51 @@ class LightboxPlugin(BasePlugin):
 });
 """
         js_code += "const lightbox = GLightbox(" + json.dumps(lb) + ");\n"
+        js_code += """
+(function () {
+  if (typeof MutationObserver === 'undefined') return;
+
+  let reloadScheduled = false;
+  function scheduleReload() {
+    if (reloadScheduled) return;
+    reloadScheduled = true;
+
+    requestAnimationFrame(() => {
+      reloadScheduled = false;
+      try {
+        lightbox.reload();
+      } catch (e) {
+        console.warn('[glightbox] reload failed:', e);
+      }
+    });
+  }
+
+  function observeAnchor(anchor) {
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type !== 'attributes') continue;
+        const img = mutation.target;
+        if (!(img instanceof HTMLImageElement)) continue;
+        const src = img.src;
+        if (!src) continue;
+
+        if (anchor.getAttribute('href') !== src) {
+          anchor.setAttribute('href', src);
+          scheduleReload();
+        }
+      }
+    });
+
+    observer.observe(anchor, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['src'],
+    });
+  }
+
+  document.querySelectorAll('a.glightbox').forEach(observeAnchor);
+})();
+        """
         if self.using_material or "navigation.instant" in config["theme"].get(
             "features", []
         ):
@@ -184,7 +225,7 @@ class LightboxPlugin(BasePlugin):
         }
 
         if not self.using_material_privacy:
-            attrs["href"] = img.attributes.get("data-src") or img.attributes.get("src", "")
+            attrs["href"] = img.attributes.get("src", "")
 
         auto_caption = self.config.get("auto_caption") or meta.get(
             "glightbox.auto_caption", False
@@ -224,7 +265,7 @@ class LightboxPlugin(BasePlugin):
         )
 
     def _get_gallery_value(self, img, auto_caption):
-        src = img.attributes.get("data-src") or img.attributes.get("src", "")
+        src = img.attributes.get("src", "")
         
         if self.config["auto_themed"]:
             if "#only-light" in src or "#gh-light-mode-only" in src:
