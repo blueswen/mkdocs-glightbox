@@ -39,7 +39,7 @@ class LightboxPlugin(BasePlugin):
     )
 
     def on_config(self, config):
-        self.using_material = config["theme"].name == "material"
+        self.using_material = config["theme"].name in ("material", "materialx")
         self.using_material_privacy = (
             self.using_material
             and "material/privacy" in config["plugins"]
@@ -90,7 +90,7 @@ class LightboxPlugin(BasePlugin):
         if not self.config["shadow"]:
             css_text += """
             .glightbox-clean .gslide-media { -webkit-box-shadow: none; box-shadow: none; }"""
-        if config["theme"].name == "material":
+        if config["theme"].name in ("material", "materialx"):
             css_text += """
             .gscrollbar-fixer { padding-right: 15px; }
             .gdesc-inner { font-size: 0.75rem; }
