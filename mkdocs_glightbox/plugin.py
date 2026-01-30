@@ -39,10 +39,7 @@ class LightboxPlugin(BasePlugin):
     )
 
     def on_config(self, config):
-        self.using_material_privacy = (
-            "material/privacy" in config["plugins"]
-            and config["plugins"]["material/privacy"].config.enabled
-        )
+        self.using_material_privacy = ("material/privacy" in config["plugins"]) or ("materialx/privacy" in config["plugins"])
 
     def on_post_page(self, output, page, config, **kwargs):
         """Add css link tag, javascript script tag, and javascript code to initialize GLightbox"""
@@ -111,25 +108,13 @@ class LightboxPlugin(BasePlugin):
         lb["closeEffect"] = plugin_config.get("effect", "zoom")
         lb["slideEffect"] = plugin_config.get("slide_effect", "slide")
         js_code = ""
-        if self.using_material_privacy:
-            js_code += """
-document.querySelectorAll('.glightbox').forEach(function(element) {
-    try {
-        var img = element.querySelector('img');
-        if (img && img.src) {
-            element.setAttribute('href', img.src);
-        } else {
-            console.log('No img element with src attribute found');
-        }
-    } catch (error) {
-        console.log('Error:', error);
-    }
-});
-"""
         js_code += "const lightbox = GLightbox(" + json.dumps(lb) + ");\n"
         js_code += """
 (function () {
   if (typeof MutationObserver === 'undefined') return;
+
+  // 用 observedImgs 做 img observer 绑定的去重
+  const observedImgs = new WeakSet();
 
   let reloadScheduled = false;
   function scheduleReload() {
@@ -146,38 +131,49 @@ document.querySelectorAll('.glightbox').forEach(function(element) {
     });
   }
 
-  function observeAnchor(anchor) {
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type !== 'attributes') continue;
-        const img = mutation.target;
-        if (!(img instanceof HTMLImageElement)) continue;
-        const src = img.src;
-        if (!src) continue;
+  function getImgUrl(img) {
+    return img.currentSrc || img.src || img.getAttribute('src') || img.getAttribute('data-src') || '';
+  }
 
-        if (anchor.getAttribute('href') !== src) {
-          anchor.setAttribute('href', src);
-          scheduleReload();
-        }
+  function syncAnchor(anchor) {
+    const img = anchor.querySelector('img');
+    if (!img) return;
+
+    // 同步 <a> 节点的 href
+    const url = getImgUrl(img);
+    if (url && anchor.getAttribute('href') !== url) {
+      anchor.setAttribute('href', url);
+    }
+
+    if (observedImgs.has(img)) return;
+
+    const observer = new MutationObserver(() => {
+      const nextUrl = getImgUrl(img);
+      if (!nextUrl) return;
+
+      if (anchor.getAttribute('href') !== nextUrl) {
+        anchor.setAttribute('href', nextUrl);
+        scheduleReload();
       }
     });
 
-    observer.observe(anchor, {
-      attributes: true,
-      subtree: true,
-      attributeFilter: ['src'],
-    });
+    observer.observe(img, { attributes: true, attributeFilter: ['src', 'srcset'] });
+    observedImgs.add(img);
   }
 
-  document.querySelectorAll('a.glightbox').forEach(observeAnchor);
+  function update() {
+    document.querySelectorAll('a.glightbox').forEach(syncAnchor);
+    scheduleReload();
+  }
+
+  if (window.document$ && !window.document$.isStopped) {
+    window.document$.subscribe(update);
+  } else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', update);
+  } else {
+    update();
+  }
 })();
-if (window.document$ && !window.document$.isStopped) {
-    window.document$.subscribe(() => lightbox.reload());
-} else if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => lightbox.reload());
-} else {
-    lightbox.reload();
-}
         """
 
         init_js_node = create_tag("script")

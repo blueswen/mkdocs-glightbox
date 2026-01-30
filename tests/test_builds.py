@@ -224,7 +224,7 @@ def test_material(tmp_path):
     validate_static(tree)
     validate_script(tree)
     script = tree.css_first("script#init-glightbox")
-    assert "document$.subscribe(()=>{ lightbox.reload(); });" in script.text()
+    assert "window.document$.subscribe(update);" in script.text()
     validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
@@ -239,7 +239,7 @@ def test_material_instant(tmp_path):
     validate_static(tree)
     validate_script(tree)
     script = tree.css_first("script#init-glightbox")
-    assert "document$.subscribe(()=>{ lightbox.reload(); });" in script.text()
+    assert "window.document$.subscribe(update);" in script.text()
     validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
@@ -474,7 +474,7 @@ def test_material_template(tmp_path):
     validate_static(tree)
     validate_script(tree)
     script = tree.css_first("script#init-glightbox")
-    assert "document$.subscribe(()=>{ lightbox.reload(); });" in script.text()
+    assert "window.document$.subscribe(update);" in script.text()
     validate_lightbox_wrap(tree.css_first("img[alt='image']"))
 
 
@@ -568,10 +568,8 @@ def test_privacy(tmp_path):
     assert a.tag == "a"
     assert "glightbox" in a.attrs.get("class", [])
     script = tree.css_first("script#init-glightbox")
-    assert (
-        "document.querySelectorAll('.glightbox').forEach(function(element)"
-        in script.text()
-    )
+    assert "img.getAttribute('data-src')" in script.text()
+    assert "anchor.setAttribute('href', url)" in script.text()
 
 
 def test_enable_by_image(tmp_path):
