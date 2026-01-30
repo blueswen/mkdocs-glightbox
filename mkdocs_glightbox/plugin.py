@@ -39,10 +39,8 @@ class LightboxPlugin(BasePlugin):
     )
 
     def on_config(self, config):
-        self.using_material = config["theme"].name in ("material", "materialx")
         self.using_material_privacy = (
-            self.using_material
-            and "material/privacy" in config["plugins"]
+            "material/privacy" in config["plugins"]
             and config["plugins"]["material/privacy"].config.enabled
         )
 
@@ -139,12 +137,12 @@ document.querySelectorAll('.glightbox').forEach(function(element) {
     reloadScheduled = true;
 
     requestAnimationFrame(() => {
-      reloadScheduled = false;
       try {
         lightbox.reload();
       } catch (e) {
         console.warn('[glightbox] reload failed:', e);
       }
+      reloadScheduled = false;
     });
   }
 
@@ -173,11 +171,14 @@ document.querySelectorAll('.glightbox').forEach(function(element) {
 
   document.querySelectorAll('a.glightbox').forEach(observeAnchor);
 })();
+if (window.document$ && !window.document$.isStopped) {
+    window.document$.subscribe(() => lightbox.reload());
+} else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => lightbox.reload());
+} else {
+    lightbox.reload();
+}
         """
-        if self.using_material or "navigation.instant" in config["theme"].get(
-            "features", []
-        ):
-            js_code += "document$.subscribe(()=>{ lightbox.reload(); });\n"
 
         init_js_node = create_tag("script")
         init_js_node.attrs["id"] = "init-glightbox"
