@@ -178,7 +178,8 @@ def validate_lightbox_wrap(img, href=None, **data_attrs):
     if href is not None:
         assert a.attrs.get("href") == href
     else:
-        assert a.attrs.get("href") == img.attrs.get("src")
+        src = img.attrs.get("data-src") or img.attrs.get("src")
+        assert a.attrs.get("href") == src
     for key, val in data_attrs.items():
         attr = f"{key}"
         assert a.attrs.get(attr) == val, f"{attr} != {val}"
@@ -635,6 +636,20 @@ def test_auto_theme(tmp_path):
     for dark_img_node in dark_img_nodes:
         validate_lightbox_wrap(dark_img_node)
         assert dark_img_node.parent.attrs.get("data-gallery") == "dark"
+
+
+def test_data_src(tmp_path):
+    """
+    Validate data-src attribute
+    """
+    mkdocs_file = "mkdocs-material-custom-js.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/data_src/index.html"
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css("img.data_src_img"):
+        validate_lightbox_wrap(img)
 
 
 @pytest.mark.timeout(5)  # prevent hanging indefinitely
