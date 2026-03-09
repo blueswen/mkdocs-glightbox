@@ -53,6 +53,14 @@ class LightboxPlugin(BasePlugin):
             return output
 
         tree = LexborHTMLParser(output)
+
+        # 1. Wrap img element
+        skip_classes = ["emojione", "twemoji", "gemoji", "off-glb"] + self.config[
+            "skip_classes"
+        ]
+        self.wrap_img_with_anchor_selectolax(tree, plugin_config=self.config, meta=page.meta, skip_classes=skip_classes)
+
+        # 2. Import GLightbox css and js sources
         head_node = tree.css_first("head")
         body_node = tree.css_first("body")
 
@@ -69,6 +77,7 @@ class LightboxPlugin(BasePlugin):
         head_node.insert_child(glightbox_css_node)
         head_node.insert_child(glightbox_js_node)
 
+        # 3. Add custom css style for GLightbox
         css_text = (
             """
             html.glightbox-open { overflow: initial; height: 100%; }
@@ -94,6 +103,7 @@ class LightboxPlugin(BasePlugin):
         patch_css_node.insert_child(css_text + "\n        ")
         head_node.insert_child(patch_css_node)
 
+        # 4. Initialize GLightbox
         plugin_config = dict(self.config)
         lb = {
             k: plugin_config[k]
@@ -135,24 +145,7 @@ class LightboxPlugin(BasePlugin):
 
         return tree.html
 
-    def on_page_content(self, html, page, config, **kwargs):
-        """Wrap img tag with anchor tag with glightbox class and attributes from config"""
-        # skip page with meta glightbox is false
-        if "glightbox" in page.meta and page.meta.get("glightbox", True) is False:
-            return html
-
-        skip_classes = ["emojione", "twemoji", "gemoji", "off-glb"] + self.config[
-            "skip_classes"
-        ]
-        return self.wrap_img_with_anchor_selectolax(
-            html, plugin_config=self.config, meta=page.meta, skip_classes=skip_classes
-        )
-
-    def wrap_img_with_anchor_selectolax(
-        self, html: str, plugin_config, meta, skip_classes
-    ):
-        tree = LexborHTMLParser(html)
-
+    def wrap_img_with_anchor_selectolax(self, tree, plugin_config, meta, skip_classes):
         for img in tree.css("img"):
             if self._should_skip_img(img, skip_classes, plugin_config, meta):
                 continue
@@ -166,8 +159,6 @@ class LightboxPlugin(BasePlugin):
             img_clone = img
             a_node.insert_child(img_clone)
             img.replace_with(a_node)
-
-        return tree.html
 
     def _should_skip_img(self, img, skip_classes, plugin_config, meta):
         """Skip by class, page meta, or plugin config"""
