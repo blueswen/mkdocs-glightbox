@@ -39,12 +39,7 @@ class LightboxPlugin(BasePlugin):
     )
 
     def on_config(self, config):
-        self.using_material = config["theme"].name == "material"
-        self.using_material_privacy = (
-            self.using_material
-            and "material/privacy" in config["plugins"]
-            and config["plugins"]["material/privacy"].config.enabled
-        )
+        self.using_material_privacy = ("material/privacy" in config["plugins"]) or ("materialx/privacy" in config["plugins"])
 
     def on_post_page(self, output, page, config, **kwargs):
         """Add css link tag, javascript script tag, and javascript code to initialize GLightbox"""
@@ -53,6 +48,14 @@ class LightboxPlugin(BasePlugin):
             return output
 
         tree = LexborHTMLParser(output)
+
+        # 1. Wrap img element
+        skip_classes = ["emojione", "twemoji", "gemoji", "off-glb"] + self.config[
+            "skip_classes"
+        ]
+        self.wrap_img_with_anchor_selectolax(tree, plugin_config=self.config, meta=page.meta, skip_classes=skip_classes)
+
+        # 2. Import GLightbox css and js sources
         head_node = tree.css_first("head")
         body_node = tree.css_first("body")
 
@@ -69,6 +72,7 @@ class LightboxPlugin(BasePlugin):
         head_node.insert_child(glightbox_css_node)
         head_node.insert_child(glightbox_js_node)
 
+        # 3. Add custom css style for GLightbox
         css_text = (
             """
             html.glightbox-open { overflow: initial; height: 100%; }
@@ -81,7 +85,7 @@ class LightboxPlugin(BasePlugin):
         if not self.config["shadow"]:
             css_text += """
             .glightbox-clean .gslide-media { -webkit-box-shadow: none; box-shadow: none; }"""
-        if config["theme"].name == "material":
+        if config["theme"].name in ("material", "materialx"):
             css_text += """
             .gscrollbar-fixer { padding-right: 15px; }
             .gdesc-inner { font-size: 0.75rem; }
@@ -94,6 +98,7 @@ class LightboxPlugin(BasePlugin):
         patch_css_node.insert_child(css_text + "\n        ")
         head_node.insert_child(patch_css_node)
 
+        # 4. Initialize GLightbox
         plugin_config = dict(self.config)
         lb = {
             k: plugin_config[k]
@@ -103,30 +108,73 @@ class LightboxPlugin(BasePlugin):
         lb["closeEffect"] = plugin_config.get("effect", "zoom")
         lb["slideEffect"] = plugin_config.get("slide_effect", "slide")
         js_code = ""
-        if self.using_material_privacy:
-            js_code += """document.querySelectorAll('.glightbox').forEach(function(element) {
-    try {
-        var img = element.querySelector('img');
-        if (img) {
-            const imageSrc = img.dataset.src || img.src;
-            if (imageSrc) {
-                element.setAttribute('href', imageSrc);
-            } else {
-                console.log('No img element with src or data-src attribute found');
-            }
-        } else {
-            console.log('No img element found');
-        }
-    } catch (error) {
-        console.log('Error:', error);
-    }
-});
-"""
         js_code += "const lightbox = GLightbox(" + json.dumps(lb) + ");\n"
-        if self.using_material or "navigation.instant" in config["theme"].get(
-            "features", []
-        ):
-            js_code += "document$.subscribe(()=>{ lightbox.reload(); });\n"
+        js_code += """
+(function () {
+  if (typeof MutationObserver === 'undefined') return;
+
+  // 用 observedImgs 做 img observer 绑定的去重
+  const observedImgs = new WeakSet();
+
+  let reloadScheduled = false;
+  function scheduleReload() {
+    if (reloadScheduled) return;
+    reloadScheduled = true;
+
+    requestAnimationFrame(() => {
+      try {
+        lightbox.reload();
+      } catch (e) {
+        console.warn('[glightbox] reload failed:', e);
+      }
+      reloadScheduled = false;
+    });
+  }
+
+  function getImgUrl(img) {
+    return img.currentSrc || img.src || img.getAttribute('src') || img.getAttribute('data-src') || '';
+  }
+
+  function syncAnchor(anchor) {
+    const img = anchor.querySelector('img');
+    if (!img) return;
+
+    // 同步 <a> 节点的 href
+    const url = getImgUrl(img);
+    if (url && anchor.getAttribute('href') !== url) {
+      anchor.setAttribute('href', url);
+    }
+
+    if (observedImgs.has(img)) return;
+
+    const observer = new MutationObserver(() => {
+      const nextUrl = getImgUrl(img);
+      if (!nextUrl) return;
+
+      if (anchor.getAttribute('href') !== nextUrl) {
+        anchor.setAttribute('href', nextUrl);
+        scheduleReload();
+      }
+    });
+
+    observer.observe(img, { attributes: true, attributeFilter: ['src', 'srcset'] });
+    observedImgs.add(img);
+  }
+
+  function update() {
+    document.querySelectorAll('a.glightbox').forEach(syncAnchor);
+    scheduleReload();
+  }
+
+  if (window.document$ && !window.document$.isStopped) {
+    window.document$.subscribe(update);
+  } else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', update);
+  } else {
+    update();
+  }
+})();
+        """
 
         init_js_node = create_tag("script")
         init_js_node.attrs["id"] = "init-glightbox"
@@ -135,24 +183,7 @@ class LightboxPlugin(BasePlugin):
 
         return tree.html
 
-    def on_page_content(self, html, page, config, **kwargs):
-        """Wrap img tag with anchor tag with glightbox class and attributes from config"""
-        # skip page with meta glightbox is false
-        if "glightbox" in page.meta and page.meta.get("glightbox", True) is False:
-            return html
-
-        skip_classes = ["emojione", "twemoji", "gemoji", "off-glb"] + self.config[
-            "skip_classes"
-        ]
-        return self.wrap_img_with_anchor_selectolax(
-            html, plugin_config=self.config, meta=page.meta, skip_classes=skip_classes
-        )
-
-    def wrap_img_with_anchor_selectolax(
-        self, html: str, plugin_config, meta, skip_classes
-    ):
-        tree = LexborHTMLParser(html)
-
+    def wrap_img_with_anchor_selectolax(self, tree, plugin_config, meta, skip_classes):
         for img in tree.css("img"):
             if self._should_skip_img(img, skip_classes, plugin_config, meta):
                 continue
@@ -166,8 +197,6 @@ class LightboxPlugin(BasePlugin):
             img_clone = img
             a_node.insert_child(img_clone)
             img.replace_with(a_node)
-
-        return tree.html
 
     def _should_skip_img(self, img, skip_classes, plugin_config, meta):
         """Skip by class, page meta, or plugin config"""
@@ -193,7 +222,9 @@ class LightboxPlugin(BasePlugin):
         }
 
         if not self.using_material_privacy:
-            attrs["href"] = img.attributes.get("data-src") or img.attributes.get("src", "")
+            attrs["href"] = img.attributes.get("data-src") or img.attributes.get(
+                "src", ""
+            )
 
         auto_caption = self.config.get("auto_caption") or meta.get(
             "glightbox.auto_caption", False
@@ -233,7 +264,7 @@ class LightboxPlugin(BasePlugin):
         )
 
     def _get_gallery_value(self, img, auto_caption):
-        src = img.attributes.get("data-src") or img.attributes.get("src", "")
+        src = img.attributes.get("src", "")
         
         if self.config["auto_themed"]:
             if "#only-light" in src or "#gh-light-mode-only" in src:
