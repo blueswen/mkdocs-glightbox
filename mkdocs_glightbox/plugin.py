@@ -222,7 +222,9 @@ class LightboxPlugin(BasePlugin):
         }
 
         if not self.using_material_privacy:
-            attrs["href"] = img.attributes.get("src", "")
+            attrs["href"] = img.attributes.get("data-src") or img.attributes.get(
+                "src", ""
+            )
 
         auto_caption = self.config.get("auto_caption") or meta.get(
             "glightbox.auto_caption", False
