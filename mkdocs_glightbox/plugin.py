@@ -123,9 +123,7 @@ class LightboxPlugin(BasePlugin):
 });
 """
         js_code += "const lightbox = GLightbox(" + json.dumps(lb) + ");\n"
-        if self.using_material or "navigation.instant" in config["theme"].get(
-            "features", []
-        ):
+        if self.using_material or ("features" in config["theme"] and "navigation.instant" in config["theme"]["features"]):
             js_code += "document$.subscribe(()=>{ lightbox.reload(); });\n"
 
         init_js_node = create_tag("script")
