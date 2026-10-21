@@ -163,7 +163,7 @@ class LightboxPlugin(BasePlugin):
             for key, value in attrs.items():
                 a_node.attrs[key] = str(value)
 
-            img_clone = img
+            img_clone = img.clone()
             a_node.insert_child(img_clone)
             img.replace_with(a_node)
 
