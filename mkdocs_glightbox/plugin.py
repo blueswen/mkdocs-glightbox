@@ -163,7 +163,9 @@ class LightboxPlugin(BasePlugin):
             for key, value in attrs.items():
                 a_node.attrs[key] = str(value)
 
-            img_clone = img
+            # Wrap a copy of the img, never the img itself: replacing a node
+            # with an anchor that contains it drops both on selectolax 1.0.1.
+            img_clone = LexborHTMLParser(img.html).css_first("img")
             a_node.insert_child(img_clone)
             img.replace_with(a_node)
 
