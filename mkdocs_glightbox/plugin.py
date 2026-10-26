@@ -173,8 +173,11 @@ class LightboxPlugin(BasePlugin):
 
     def _should_skip_img(self, img, skip_classes, plugin_config, meta):
         """Skip by class, page meta, or plugin config"""
-        if img.parent and img.parent.tag == "a":
-            return True
+        parent = img.parent
+        while parent is not None:
+            if parent.tag == "a":
+                return True
+            parent = parent.parent
         classes = img.attributes.get("class", "").split()
         if set(classes) & set(skip_classes):
             return True
