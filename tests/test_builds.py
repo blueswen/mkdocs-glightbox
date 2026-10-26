@@ -429,6 +429,33 @@ def test_caption(tmp_path):
     )
 
 
+def test_figure_caption(tmp_path):
+    """
+    Validate captions from classed figures (pymdownx.blocks.caption)
+    """
+    mkdocs_file = "mkdocs-figure-caption.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/figure_caption/index.html"
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='all-captions']"),
+        **{
+            "data-title": '<span class="caption-prefix">Figure 1:</span> Title',
+            "data-description": 'A <a href="https://example.com">long</a> description'
+            '<div class="gslide-attribution">Photo by <em>Someone</em></div>',
+        },
+    )
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='explicit-attrs']"),
+        **{"data-title": "data-title", "data-description": "data-description"},
+    )
+    a = tree.css_first("img[alt='plain-caption']").parent
+    assert "data-title" not in a.attrs
+    assert "data-description" not in a.attrs
+
+
 def test_auto_caption_by_page(tmp_path):
     """
     Validate auto captions with image tag alt by page

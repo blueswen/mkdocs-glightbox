@@ -10,6 +10,13 @@ from selectolax.lexbor import LexborHTMLParser, create_tag
 log = logging.getLogger(__name__)
 base_path = os.path.dirname(os.path.abspath(__file__))
 
+# <figure> classes whose <figcaption> fills a slide field (e.g. pymdownx.blocks.caption)
+FIGURE_CAPTION_CLASSES = {
+    "glightbox-title": "title",
+    "glightbox-description": "description",
+    "glightbox-attribution": "attribution",
+}
+
 
 class LightboxPlugin(BasePlugin):
     """Add lightbox to MkDocs"""
@@ -74,6 +81,7 @@ class LightboxPlugin(BasePlugin):
             html.glightbox-open { overflow: initial; height: 100%; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
+            .gslide-attribution { font-size: 0.85em; opacity: 0.8; margin-top: 0.5em; }
             .gslide-image img { background: """
             + self.config["background"]
             + """; }"""
@@ -200,6 +208,7 @@ class LightboxPlugin(BasePlugin):
         auto_caption = self.config.get("auto_caption") or meta.get(
             "glightbox.auto_caption", False
         )
+        captions = self._get_figure_captions(img)
 
         slide_options_map = {
             "title": self._get_title_value,
@@ -210,7 +219,7 @@ class LightboxPlugin(BasePlugin):
 
         for option, value_getter in slide_options_map.items():
             attr = f"data-{option}"
-            val = value_getter(img, auto_caption)
+            val = value_getter(img, auto_caption, captions)
 
             if val:
                 if attr == "data-caption-position":
@@ -220,21 +229,50 @@ class LightboxPlugin(BasePlugin):
 
         return attrs
 
-    def _get_title_value(self, img, auto_caption):
-        val = img.attributes.get("data-title", "")
+    def _get_figure_captions(self, img):
+        """Get slide fields from the captions of the classed figures wrapping img"""
+        captions = {}
+        node = img.parent
+        while node is not None:
+            if node.tag == "figure":
+                classes = (node.attributes.get("class") or "").split()
+                for cls, field in FIGURE_CAPTION_CLASSES.items():
+                    # nearest figure wins when the same class is nested
+                    if cls in classes and field not in captions:
+                        caption = self._get_figcaption_html(node)
+                        if caption:
+                            captions[field] = caption
+            node = node.parent
+        return captions
+
+    def _get_figcaption_html(self, figure):
+        """Get the inner html of the direct figcaption child, unwrapping a lone paragraph"""
+        figcaption = next((n for n in figure.iter() if n.tag == "figcaption"), None)
+        if figcaption is None:
+            return ""
+        content = [n for n in figcaption.iter(include_text=True) if n.html.strip()]
+        if len(content) == 1 and content[0].tag == "p":
+            figcaption = content[0]
+        return "".join(n.html for n in figcaption.iter(include_text=True)).strip()
+
+    def _get_title_value(self, img, auto_caption, captions):
+        val = img.attributes.get("data-title") or captions.get("title", "")
         if auto_caption and not val:
             val = img.attributes.get("alt", "")
         return val
 
-    def _get_description_value(self, img, auto_caption):
-        return img.attributes.get("data-description", "")
+    def _get_description_value(self, img, auto_caption, captions):
+        val = img.attributes.get("data-description") or captions.get("description", "")
+        if "attribution" in captions:
+            val += f'<div class="gslide-attribution">{captions["attribution"]}</div>'
+        return val
 
-    def _get_caption_position_value(self, img, auto_caption):
+    def _get_caption_position_value(self, img, auto_caption, captions):
         return img.attributes.get(
             "data-caption-position", self.config["caption_position"]
         )
 
-    def _get_gallery_value(self, img, auto_caption):
+    def _get_gallery_value(self, img, auto_caption, captions):
         src = img.attributes.get("data-src") or img.attributes.get("src", "")
         
         if self.config["auto_themed"]:

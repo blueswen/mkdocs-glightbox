@@ -126,3 +126,61 @@ glightbox.auto_caption: true
 <figcaption>Tulum, Mexico. Credit: Blueswen</figcaption>
 </figure>
 </div>
+
+### Captions from caption blocks
+
+When you use [`pymdownx.blocks.caption`](https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/caption/), the plugin can copy the captions shown on the page into the **light box**. Each caption block wraps the image in a `<figure>`. The class on that figure decides which light box field the caption fills:
+
+| Figure class            | Light box field                     |
+| ----------------------- | ----------------------------------- |
+| `glightbox-title`       | Title                               |
+| `glightbox-description` | Description                         |
+| `glightbox-attribution` | Appended at the end of the description |
+
+The caption keeps its HTML, so links and emphasis still work. Explicit `data-title` and `data-description` attributes on the image take precedence. The figure title takes precedence over `auto_caption`.
+
+Define custom caption types that add these classes automatically:
+
+```yaml
+markdown_extensions:
+  - pymdownx.blocks.caption:
+      types:
+        - caption
+        - name: figure-caption
+          prefix: "Figure {}:"
+          classes: glightbox-title
+        - name: figure-description
+          classes: glightbox-description
+        - name: attribution
+          classes: glightbox-attribution
+```
+
+Then stack the blocks below the image:
+
+```markdown title="Using caption blocks"
+![Madeira, Portugal](../images/gallery/blueswen-madeira.jpeg){ width="500px" }
+/// attribution
+Credit: *Blueswen*
+///
+/// figure-description
+Madeira is an archipelago of 4 islands off the northwest coast of Africa.
+///
+/// figure-caption
+Madeira, Portugal.
+///
+```
+
+<div class="result" markdown>
+
+![Madeira, Portugal](../images/gallery/blueswen-madeira.jpeg){ width="500px" }
+/// attribution
+Credit: *Blueswen*
+///
+/// figure-description
+Madeira is an archipelago of 4 islands off the northwest coast of Africa.
+///
+/// figure-caption
+Madeira, Portugal.
+///
+
+</div>

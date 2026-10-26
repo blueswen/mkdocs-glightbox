@@ -1,0 +1,18 @@
+site_name: test mkdocs_glightbox
+use_directory_urls: true
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.blocks.caption:
+      types:
+        - caption
+        - name: figure-caption
+          prefix: "Figure {}:"
+          classes: glightbox-title
+        - name: figure-description
+          classes: glightbox-description
+        - name: attribution
+          classes: glightbox-attribution
+
+plugins:
+    - glightbox
