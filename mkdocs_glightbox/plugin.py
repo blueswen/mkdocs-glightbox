@@ -193,6 +193,12 @@ class LightboxPlugin(BasePlugin):
             "data-width": plugin_config.get("width", "auto"),
             "data-height": plugin_config.get("height", "auto"),
         }
+        # GLightBox fits the image above a bottom/top description with
+        # calc(<data-height> - <description height>), which is invalid for
+        # "auto" and lets the description overflow the screen. Without the
+        # attribute, GLightBox falls back to 100vh.
+        if attrs["data-height"] == "auto":
+            del attrs["data-height"]
 
         if not self.using_material_privacy:
             attrs["href"] = img.attributes.get("data-src") or img.attributes.get("src", "")

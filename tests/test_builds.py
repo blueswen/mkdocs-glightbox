@@ -212,6 +212,10 @@ def test_basic(tmp_path):
     validate_script(tree)
     validate_lightbox_wrap(tree.css_first("img[alt='image']"))
     validate_lightbox_wrap(tree.css_first("img[alt='img-tag']"))
+    # "auto" height is omitted so GLightBox can fit the image above the description
+    validate_lightbox_wrap(
+        tree.css_first("img[alt='image']"), **{"data-width": "auto", "data-height": None}
+    )
 
 
 def test_material(tmp_path):
