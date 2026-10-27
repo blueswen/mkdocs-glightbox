@@ -11,8 +11,6 @@ markdown_extensions:
           classes: glightbox-title
         - name: figure-description
           classes: glightbox-description
-        - name: attribution
-          classes: glightbox-attribution
 
 plugins:
     - glightbox

@@ -1,7 +1,4 @@
 ![all-captions](img.png)
-/// attribution
-Photo by *Someone*
-///
 /// figure-description
 A [long](https://example.com) description
 ///

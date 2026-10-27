@@ -443,8 +443,7 @@ def test_figure_caption(tmp_path):
         tree.css_first("img[alt='all-captions']"),
         **{
             "data-title": '<span class="caption-prefix">Figure 1:</span> Title',
-            "data-description": 'A <a href="https://example.com">long</a> description'
-            '<div class="gslide-attribution">Photo by <em>Someone</em></div>',
+            "data-description": 'A <a href="https://example.com">long</a> description',
         },
     )
     validate_lightbox_wrap(

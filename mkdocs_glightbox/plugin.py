@@ -14,7 +14,6 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 FIGURE_CAPTION_CLASSES = {
     "glightbox-title": "title",
     "glightbox-description": "description",
-    "glightbox-attribution": "attribution",
 }
 
 
@@ -81,7 +80,6 @@ class LightboxPlugin(BasePlugin):
             html.glightbox-open { overflow: initial; height: 100%; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
-            .gslide-attribution { font-size: 0.85em; opacity: 0.8; margin-top: 0.5em; }
             .gslide-image img { background: """
             + self.config["background"]
             + """; }"""
@@ -262,10 +260,9 @@ class LightboxPlugin(BasePlugin):
         return val
 
     def _get_description_value(self, img, auto_caption, captions):
-        val = img.attributes.get("data-description") or captions.get("description", "")
-        if "attribution" in captions:
-            val += f'<div class="gslide-attribution">{captions["attribution"]}</div>'
-        return val
+        return img.attributes.get("data-description") or captions.get(
+            "description", ""
+        )
 
     def _get_caption_position_value(self, img, auto_caption, captions):
         return img.attributes.get(
