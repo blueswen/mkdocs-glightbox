@@ -49,6 +49,14 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.details
+  - pymdownx.blocks.caption:
+      types:
+        - caption
+        - name: figure-caption
+          prefix: "Figure {}:"
+          classes: glightbox-title
+        - name: figure-description
+          classes: glightbox-description
   - attr_list
   - meta
   - md_in_html
