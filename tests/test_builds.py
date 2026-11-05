@@ -273,6 +273,21 @@ def test_disable_by_page(tmp_path):
         validate_lightbox_wrap_disable(img)
 
 
+def test_disable_by_page_instant(tmp_path):
+    """
+    Pages with glightbox: false still load the library with navigation.instant,
+    so later pages have it, but their images are not wrapped
+    """
+    mkdocs_file = "mkdocs-material-instant.yml"
+    testproject_path = validate_mkdocs_file(tmp_path, f"tests/fixtures/{mkdocs_file}")
+    file = testproject_path / "site/disable_by_page/index.html"
+    tree = LexborHTMLParser(file.read_text(encoding="utf8"))
+    validate_static(tree, path="../")
+    validate_script(tree)
+    for img in tree.css("img[alt='image']"):
+        validate_lightbox_wrap_disable(img)
+
+
 def test_disable_by_image(tmp_path):
     """
     Disable by the image with image custom class or predefined class
