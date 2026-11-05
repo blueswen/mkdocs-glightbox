@@ -48,8 +48,10 @@ class LightboxPlugin(BasePlugin):
 
     def on_post_page(self, output, page, config, **kwargs):
         """Add css link tag, javascript script tag, and javascript code to initialize GLightbox"""
-        # skip page with meta glightbox is false
-        if "glightbox" in page.meta and page.meta.get("glightbox", True) is False:
+        instant = "navigation.instant" in config["theme"].get("features", [])
+        # skip page with meta glightbox is false, unless a later page may need the
+        # library: instant navigation doesn't run scripts added after the first load
+        if page.meta.get("glightbox", True) is False and not instant:
             return output
 
         tree = LexborHTMLParser(output)
@@ -123,9 +125,7 @@ class LightboxPlugin(BasePlugin):
 });
 """
         js_code += "const lightbox = GLightbox(" + json.dumps(lb) + ");\n"
-        if self.using_material or "navigation.instant" in config["theme"].get(
-            "features", []
-        ):
+        if self.using_material or instant:
             js_code += "document$.subscribe(()=>{ lightbox.reload(); });\n"
 
         init_js_node = create_tag("script")
